@@ -1,12 +1,3 @@
-//! The main application state.
-//!
-//! # Example
-//!
-//! ```
-//! let mut app = Application::new()?;
-//! app.run()?;
-//! ```
+//! Supporting code for the Agents sketches.
 
-mod app;
-
-pub use self::app::{App, State};
+pub mod app;

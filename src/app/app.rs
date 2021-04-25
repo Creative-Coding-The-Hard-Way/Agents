@@ -8,9 +8,13 @@ use std::fmt::Write as FmtWrite;
 use textwrap::{termwidth, Options};
 
 impl<S: State> App<S> {
-    /// Build a new instance of the application with some state.
+    /// Build a new instance of the application.
+    ///
+    /// `build_state` is a function which constructs an instance of the
+    /// application's state type.
+    ///
     pub fn new(
-        init: fn(&mut glfw::Window, &mut Graphics) -> Result<S>,
+        build_state: fn(&mut glfw::Window, &mut Graphics) -> Result<S>,
     ) -> Result<Self> {
         Logger::with_env_or_str("info")
             .format(multiline_format)
@@ -24,7 +28,7 @@ impl<S: State> App<S> {
         window_surface.window.set_key_polling(true);
         window_surface.window.set_size_polling(true);
 
-        let state = init(&mut window_surface.window, &mut graphics)?;
+        let state = build_state(&mut window_surface.window, &mut graphics)?;
 
         Ok(Self {
             graphics,
@@ -33,8 +37,11 @@ impl<S: State> App<S> {
         })
     }
 
-    /// Run the application, blocks until the main event loop exits.
-    pub fn run(mut self) -> Result<()> {
+    /// The application's main loop.
+    ///
+    /// This method will block until the user kills the application or until
+    /// the State implementation calls `window.set_should_close(true)`.
+    pub fn main_loop(mut self) -> Result<()> {
         // initialize the app's state
         self.state
             .init(&mut self.window_surface.window, &mut self.graphics)?;

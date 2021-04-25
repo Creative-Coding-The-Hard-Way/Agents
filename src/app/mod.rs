@@ -1,4 +1,62 @@
-//! The main application structure and supporting traits.
+//! The application structure and supporting traits.
+//!
+//! # Example
+//!
+//! ```rust,no_run
+//! use agents::app::{App, State};
+//! use anyhow::{Context, Result};
+//! use draw2d::{Graphics, LayerHandle, TextureHandle, Vertex};
+//! use glfw::Window;
+//!
+//! /// Every binary will have a structure of some sort.
+//! struct Example {
+//!   layer: LayerHandle
+//! }
+//!
+//! /// The structure can have whatever implementation functions it needs.
+//! impl Example {
+//!
+//!   /// The constructor has access to both the window and graphics.
+//!   pub fn create(
+//!     window: &mut glfw::Window,
+//!     graphics: &mut draw2d::Graphics
+//!   ) -> Result<Self> {
+//!     Ok(Self {
+//!       layer: graphics.add_layer_to_top()
+//!     })
+//!   }
+//! }
+//!
+//! /// The example must implement State to be used with an application.
+//! /// All methods have defaults, so none are *required* for a bare minimum
+//! /// working example.
+//! impl State for Example {
+//!   fn update(&mut self, _: &mut Window, g: &mut Graphics) -> Result<()> {
+//!     let layer = g.get_layer_mut(&self.layer).unwrap();
+//!     layer.push_vertices(&[
+//!         Vertex {
+//!             pos: [-100.0, -100.0],
+//!             ..Default::default()
+//!         },
+//!         Vertex {
+//!             pos: [100.0, -100.0],
+//!             ..Default::default()
+//!         },
+//!         Vertex {
+//!             pos: [0.0, 100.0],
+//!             rgba: [0.1, 0.2, 0.8, 1.0],
+//!             ..Default::default()
+//!         },
+//!     ]);
+//!     Ok(())
+//!   }
+//! }
+//!
+//! /// Finally, start the application and let it run until the user quits.
+//! fn main() -> Result<()> {
+//!   App::new(Example::create)?.main_loop()
+//! }
+//! ```
 
 mod app;
 

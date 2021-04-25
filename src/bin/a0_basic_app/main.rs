@@ -1,4 +1,4 @@
-use agents::{App, State};
+use agents::app::{App, State};
 
 use anyhow::{Context, Result};
 use draw2d::{Graphics, LayerHandle, TextureHandle, Vertex};
@@ -70,5 +70,5 @@ impl State for Demo {
 }
 
 fn main() -> Result<()> {
-    App::new(Demo::new)?.run()
+    App::new(Demo::new)?.main_loop()
 }
