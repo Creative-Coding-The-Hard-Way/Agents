@@ -34,6 +34,9 @@ jobs:
     - name: Run tests
       run: cargo test --all-targets --verbose
 
+    - name: Run Doctests
+      run: cargo test --doc --verbose
+
     - name: Build Docs
       run: cargo doc --verbose
 
