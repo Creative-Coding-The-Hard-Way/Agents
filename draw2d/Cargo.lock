@@ -13,19 +13,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "aae1277d39aeec15cb388266ecc24b11c80469deae6067e17a1a7aa9e5c1f234"
 
 [[package]]
-name = "agents"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "draw2d",
- "flexi_logger",
- "glfw",
- "log",
- "nalgebra",
- "textwrap",
-]
-
-[[package]]
 name = "aho-corasick"
 version = "0.7.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -217,11 +204,13 @@ dependencies = [
  "anyhow",
  "aquamarine",
  "ash",
+ "flexi_logger",
  "glfw",
  "image",
  "log",
  "memoffset",
  "nalgebra",
+ "textwrap",
 ]
 
 [[package]]

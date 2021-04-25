@@ -1,16 +1,12 @@
-//! A bare-minimum set of tools for rendering 2-d graphics with vulkan in rust.
+//! The main application state.
+//!
+//! # Example
+//!
+//! ```
+//! let mut app = Application::new()?;
+//! app.run()?;
+//! ```
 
-mod glfw_window;
-mod graphics;
+mod app;
 
-pub use self::{
-    glfw_window::{EventReceiver, GlfwWindow},
-    graphics::{
-        draw2d::{
-            layer::{Layer, LayerHandle},
-            texture_atlas::TextureHandle,
-            Vertex,
-        },
-        Graphics,
-    },
-};
+pub use self::app::{App, State};

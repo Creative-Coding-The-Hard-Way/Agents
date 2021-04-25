@@ -1,5 +1,9 @@
-# Draw2D
+# Agents
 
-A starter application for rendering 2D graphics with Vulkan.
+A study in intelligent agents for creative coding.
 
-![screenshot](./Screenshot.png)
+## How To Run
+
+```
+> cargo run --examples agent
+```
