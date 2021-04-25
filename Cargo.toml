@@ -1,0 +1,27 @@
+[package]
+name = "draw2d"
+version = "0.1.0"
+authors = ["Bradley Lyman <lyman.brad3211@gmail.com>"]
+edition = "2018"
+build = "build.rs"
+
+[dependencies]
+anyhow = "1.0.38"
+log = "0.4.13"
+ash = "0.31.0"
+nalgebra = "*"
+memoffset = "*"
+image = "0.23.14"
+aquamarine = "*"
+
+[dependencies.glfw]
+version = "0.41.0"
+features = [ "vulkan" ]
+
+[dev-dependencies]
+flexi_logger = "0.17.1"
+
+
+[dev-dependencies.textwrap]
+features = ["terminal_size"]
+version = "0.13.2"
