@@ -1,32 +1,59 @@
 mod vehicle;
 
 use agents::app::{App, State};
-use vehicle::Vehicle;
+use vehicle::{Bounds, Vehicle};
 
-use anyhow::{Context, Result};
+use anyhow::Result;
 use draw2d::{Graphics, LayerHandle};
-use glfw::Window;
+
+use std::time::Duration;
 
 struct Demo {
     layer: LayerHandle,
-    vehicle: Vehicle,
+    vehicles: Vec<Vehicle>,
 }
 
 impl Demo {
     fn new(_w: &mut glfw::Window, graphics: &mut Graphics) -> Result<Self> {
+        let mut vehicles = vec![];
+
+        let max = 2000;
+        for i in 0..max {
+            let norm = i as f32 / max as f32;
+            let angle = norm * std::f32::consts::TAU;
+            vehicles.push(Vehicle::new(
+                [angle.cos() * 200.0, angle.sin() * 200.0],
+                [
+                    -angle.sin() * (200.0 * (angle * 4.0).cos()),
+                    angle.cos() * (200.0 * (angle * 4.0).cos()),
+                ],
+            ));
+        }
         Ok(Self {
             layer: graphics.add_layer_to_top(),
-            vehicle: Vehicle::new(),
+            vehicles,
         })
     }
 }
 
 impl State for Demo {
-    fn init(&mut self, _w: &mut Window, graphics: &mut Graphics) -> Result<()> {
-        let layer = graphics
-            .get_layer_mut(&self.layer)
-            .with_context(|| "invalid layer handle???")?;
-        self.vehicle.draw(layer);
+    fn update(
+        &mut self,
+        window: &mut glfw::Window,
+        graphics: &mut draw2d::Graphics,
+        update_duration: Duration,
+    ) -> Result<()> {
+        let layer = graphics.get_layer_mut(&self.layer).unwrap();
+        layer.clear();
+
+        let bounds = Bounds::create(window);
+        let dt = update_duration.as_secs_f32();
+        for vehicle in &mut self.vehicles {
+            vehicle.enforce_bounds(&bounds);
+            vehicle.integrate(dt);
+            vehicle.draw(layer);
+        }
+
         Ok(())
     }
 }
