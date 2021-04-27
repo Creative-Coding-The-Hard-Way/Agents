@@ -213,6 +213,7 @@ dependencies = [
 [[package]]
 name = "draw2d"
 version = "0.1.0"
+source = "git+https://github.com/Creative-Coding-The-Hard-Way/Draw2D?branch=main#909166904e6c46beefc08ab3634e8b402d0abb05"
 dependencies = [
  "anyhow",
  "aquamarine",
