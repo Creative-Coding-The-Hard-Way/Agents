@@ -7,6 +7,7 @@
 //! use anyhow::{Context, Result};
 //! use draw2d::{Graphics, LayerHandle, TextureHandle, Vertex};
 //! use glfw::Window;
+//! use std::time::Duration;
 //!
 //! /// Every binary will have a structure of some sort.
 //! struct Example {
@@ -31,7 +32,12 @@
 //! /// All methods have defaults, so none are *required* for a bare minimum
 //! /// working example.
 //! impl State for Example {
-//!   fn update(&mut self, _: &mut Window, g: &mut Graphics) -> Result<()> {
+//!   fn update(
+//!     &mut self,
+//!     _: &mut Window,
+//!     g: &mut Graphics,
+//!     _dt: Duration
+//!   ) -> Result<()> {
 //!     let layer = g.get_layer_mut(&self.layer).unwrap();
 //!     layer.push_vertices(&[
 //!         Vertex {
@@ -59,10 +65,12 @@
 //! ```
 
 mod app;
+mod update_timer;
 
 use anyhow::Result;
 use draw2d::{GlfwWindow, Graphics};
 use glfw::{Action, Key, WindowEvent};
+use std::time::{Duration, Instant};
 
 /// Each application maintains an instance of State which controls the actual
 /// behavior and rendering.
@@ -88,6 +96,7 @@ pub trait State {
         &mut self,
         window: &mut glfw::Window,
         graphics: &mut draw2d::Graphics,
+        update_duration: Duration,
     ) -> Result<()> {
         Ok(())
     }
@@ -121,5 +130,23 @@ pub trait State {
 pub struct App<S: State> {
     graphics: Graphics,
     window_surface: GlfwWindow,
+    update_timer: UpdateTimer,
     state: S,
+}
+
+/// The timer is used to compute the time to update and the average update
+/// duration.
+///
+/// The timer prints the average update duration to the terminal. It only does
+/// this every few seconds to prevent terminal IO from becoming a bottleneck.
+struct UpdateTimer {
+    /// The timestamp recorded for the last update.
+    last_update: Instant,
+
+    /// The timestamp recorded last time the average update duration was
+    /// checkpointed.
+    last_checkpoint: Instant,
+
+    /// The number of updates since the last checkpoint.
+    updates_since_checkpoint: i32,
 }

@@ -22,7 +22,7 @@ impl<S: State> App<S> {
 
         log::info!("adjust log level by setting the RUST_LOG='info'");
 
-        let mut window_surface = GlfwWindow::windowed("Draw2D", 1366, 768)?;
+        let mut window_surface = GlfwWindow::windowed("Agents", 1366, 768)?;
         let mut graphics = Graphics::new(&window_surface)?;
         window_surface.window.set_resizable(true);
         window_surface.window.set_key_polling(true);
@@ -33,6 +33,7 @@ impl<S: State> App<S> {
         Ok(Self {
             graphics,
             window_surface,
+            update_timer: Default::default(),
             state,
         })
     }
@@ -50,8 +51,12 @@ impl<S: State> App<S> {
             for (_, event) in self.window_surface.poll_events() {
                 self.handle_event(event)?;
             }
-            self.state
-                .update(&mut self.window_surface.window, &mut self.graphics)?;
+            let duration = self.update_timer.tick();
+            self.state.update(
+                &mut self.window_surface.window,
+                &mut self.graphics,
+                duration,
+            )?;
             self.graphics.render(&self.window_surface)?;
         }
         Ok(())
