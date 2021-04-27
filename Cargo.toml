@@ -7,7 +7,7 @@ build = "build.rs"
 crate-type = "bin"
 
 [dependencies]
-draw2d = { path = "./draw2d", version = "0.1.0" }
+draw2d = { git = "https://github.com/Creative-Coding-The-Hard-Way/Draw2D", branch="main"}
 flexi_logger = "0.17.1"
 anyhow = "1.0.38"
 nalgebra = "0.25.0"
