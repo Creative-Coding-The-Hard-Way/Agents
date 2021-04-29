@@ -1,6 +1,6 @@
 mod vehicle;
 
-use agents::app::{App, State};
+use agents::app::{App, State, UpdateTimer};
 use vehicle::{Bounds, Vehicle};
 
 use anyhow::Result;
@@ -8,29 +8,30 @@ use draw2d::{
     camera::{default_camera_controls, OrthoCamera},
     Graphics, LayerHandle, Vertex,
 };
-
 use std::{
-    sync::mpsc::{self, Receiver, Sender, TryRecvError},
+    sync::mpsc::{self, Sender, TryRecvError},
     thread,
     time::{Duration, Instant},
 };
+use triple_buffer::{Output, TripleBuffer};
 
 struct Sim {
     join_handle: Option<thread::JoinHandle<()>>,
     stop_sender: Sender<()>,
-    update_reciever: Receiver<Vec<Vehicle>>,
+    output_buffer: Output<Vec<Vehicle>>,
 }
 
 impl Sim {
     fn new() -> Result<Self> {
         let (stop_sender, stop_receiver) = mpsc::channel();
-        let (update_sender, update_reciever) = mpsc::channel();
+        let vertex_buffer = TripleBuffer::new(vec![]);
+        let (mut input_buffer, output_buffer) = vertex_buffer.split();
+        let mut vehicles = vec![];
+        let mut timer = UpdateTimer::new("Simulation Update Duration");
 
         let join_handle = thread::Builder::new()
             .name("simulation thread".to_owned())
             .spawn(move || {
-                let mut vehicles = vec![];
-
                 let max = 10000;
                 for i in 0..max {
                     let norm = i as f32 / max as f32;
@@ -40,14 +41,16 @@ impl Sim {
                         [angle.cos() * 2.0, angle.sin() * 2.0],
                     ));
                 }
-                update_sender.send(vehicles.clone()).unwrap();
+                input_buffer.input_buffer().clear();
+                input_buffer.input_buffer().extend_from_slice(&vehicles);
+                input_buffer.publish();
 
-                let mut last_update = Instant::now();
                 loop {
-                    let wait = Duration::from_millis(16)
-                        - (Instant::now() - last_update);
-                    thread::sleep(wait);
-                    last_update = Instant::now();
+                    let elapsed = timer.tick();
+                    if elapsed < Duration::from_millis(8) {
+                        let wait = Duration::from_millis(8) - elapsed;
+                        thread::sleep(wait);
+                    }
 
                     match stop_receiver.try_recv() {
                         Ok(_) | Err(TryRecvError::Disconnected) => {
@@ -64,25 +67,27 @@ impl Sim {
                         top: 20.0,
                         margin: 0.5,
                     };
-                    let dt = 0.1;
+                    let dt = 0.008;
                     for vehicle in &mut vehicles {
                         vehicle.enforce_bounds(&bounds);
                         vehicle.integrate(dt);
                     }
 
-                    update_sender.send(vehicles.clone()).unwrap();
+                    input_buffer.input_buffer().clear();
+                    input_buffer.input_buffer().extend_from_slice(&vehicles);
+                    input_buffer.publish();
                 }
             })?;
 
         Ok(Self {
             join_handle: Some(join_handle),
             stop_sender,
-            update_reciever,
+            output_buffer,
         })
     }
 
-    fn try_get_next_tick(&self) -> Result<Vec<Vehicle>, TryRecvError> {
-        self.update_reciever.try_recv()
+    fn vehicles(&mut self) -> &[Vehicle] {
+        self.output_buffer.read()
     }
 }
 
@@ -191,21 +196,13 @@ impl State for Demo {
     ) -> Result<()> {
         graphics.set_projection(&self.camera.as_matrix());
 
-        match self.sim.try_get_next_tick() {
-            Ok(vehicles) => {
-                let layer = graphics.get_layer_mut(&self.layer).unwrap();
-                layer.clear();
-                for vehicle in vehicles {
-                    vehicle.draw(layer);
-                }
-                Ok(())
-            }
-
-            Err(TryRecvError::Empty) => Ok(()),
-            Err(TryRecvError::Disconnected) => {
-                anyhow::bail!("simulation panicked!")
-            }
+        let layer = graphics.get_layer_mut(&self.layer).unwrap();
+        layer.clear();
+        for vehicle in self.sim.vehicles() {
+            layer.push_vertices(&vehicle.draw());
         }
+
+        Ok(())
     }
 
     fn handle_event(

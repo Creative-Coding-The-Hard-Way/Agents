@@ -2,18 +2,17 @@ use std::time::{Duration, Instant};
 
 use super::UpdateTimer;
 
-impl Default for UpdateTimer {
-    fn default() -> Self {
+impl UpdateTimer {
+    const UPDATE_INTERVAL: Duration = Duration::from_secs(5);
+
+    pub fn new<Name: Into<String>>(name: Name) -> Self {
         Self {
             last_update: Instant::now(),
             last_checkpoint: Instant::now(),
             updates_since_checkpoint: 0,
+            display_name: name.into(),
         }
     }
-}
-
-impl UpdateTimer {
-    const UPDATE_INTERVAL: Duration = Duration::from_secs(5);
 
     /// Tick the timer and return the duration since the last update.
     ///
@@ -29,11 +28,12 @@ impl UpdateTimer {
             let nanos = since_last_checkpoint.as_nanos() as f32;
             let nanos_per_update = nanos / self.updates_since_checkpoint as f32;
             let ms_per_update = nanos_per_update / 1e+6;
-            let fps = f32::floor(1000.0 / ms_per_update) as i32;
+            let tps = f32::floor(1000.0 / ms_per_update) as i32;
             log::info!(
-                "Avg Update Duration: {:.4} ms | {} fps",
+                "{} : {:.4} ms | {} tps",
+                self.display_name,
                 ms_per_update,
-                fps
+                tps
             );
 
             self.last_checkpoint = now;

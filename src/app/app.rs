@@ -1,3 +1,5 @@
+use crate::app::UpdateTimer;
+
 use super::{App, State};
 
 use anyhow::Result;
@@ -34,7 +36,7 @@ impl<S: State> App<S> {
         Ok(Self {
             graphics,
             window_surface,
-            update_timer: Default::default(),
+            update_timer: UpdateTimer::new("Render Duration"),
             state,
         })
     }

@@ -106,7 +106,7 @@ impl Vehicle {
     }
 
     /// Draw the vehicle as a triangle to a single graphics layer.
-    pub fn draw(&self, layer: &mut Layer) {
+    pub fn draw(&self) -> [Vertex; 3] {
         const SIZE: f32 = 1.0;
 
         let look = self.vel.normalize();
@@ -117,7 +117,7 @@ impl Vehicle {
         let right = self.pos + (look_right * SIZE * 0.15) + (look * -0.5);
         let left = self.pos + (look_left * SIZE * 0.15) + (look * -0.5);
 
-        layer.push_vertices(&[
+        [
             Vertex {
                 pos: front.into(),
                 ..Default::default()
@@ -130,7 +130,7 @@ impl Vehicle {
                 pos: left.into(),
                 ..Default::default()
             },
-        ]);
+        ]
     }
 }
 
