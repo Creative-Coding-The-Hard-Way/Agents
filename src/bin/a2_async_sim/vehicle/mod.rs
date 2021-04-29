@@ -3,11 +3,11 @@ use draw2d::{Layer, Vertex};
 type Vec2 = nalgebra::Vector2<f32>;
 
 pub struct Bounds {
-    left: f32,
-    right: f32,
-    bottom: f32,
-    top: f32,
-    margin: f32,
+    pub left: f32,
+    pub right: f32,
+    pub bottom: f32,
+    pub top: f32,
+    pub margin: f32,
 }
 
 impl Bounds {
@@ -25,6 +25,7 @@ impl Bounds {
     }
 }
 
+#[derive(Debug, Copy, Clone)]
 pub struct Vehicle {
     pos: Vec2,
     vel: Vec2,
