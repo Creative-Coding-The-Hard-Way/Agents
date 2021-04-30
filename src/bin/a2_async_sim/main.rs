@@ -8,11 +8,8 @@ use draw2d::{
     camera::{default_camera_controls, OrthoCamera},
     Graphics, LayerHandle, Vertex,
 };
-use std::{
-    sync::mpsc::{self, Sender, TryRecvError},
-    thread,
-    time::{Duration, Instant},
-};
+use std::sync::mpsc::{self, Sender, TryRecvError};
+use std::{thread, time::Duration};
 use triple_buffer::{Output, TripleBuffer};
 
 struct Sim {
@@ -23,16 +20,21 @@ struct Sim {
 
 impl Sim {
     fn new() -> Result<Self> {
-        let (stop_sender, stop_receiver) = mpsc::channel();
+        let mut update_timer = UpdateTimer::new("Sim Timer");
         let vertex_buffer = TripleBuffer::new(vec![]);
         let (mut input_buffer, output_buffer) = vertex_buffer.split();
+        let (stop_sender, stop_receiver) = mpsc::channel();
         let mut vehicles = vec![];
-        let mut timer = UpdateTimer::new("Simulation Update Duration");
+
+        let should_continue = move || match stop_receiver.try_recv() {
+            Ok(_) | Err(TryRecvError::Disconnected) => false,
+            _ => true,
+        };
 
         let join_handle = thread::Builder::new()
             .name("simulation thread".to_owned())
             .spawn(move || {
-                let max = 10000;
+                let max = 100000;
                 for i in 0..max {
                     let norm = i as f32 / max as f32;
                     let angle = norm * std::f32::consts::TAU;
@@ -45,20 +47,8 @@ impl Sim {
                 input_buffer.input_buffer().extend_from_slice(&vehicles);
                 input_buffer.publish();
 
-                loop {
-                    let elapsed = timer.tick();
-                    if elapsed < Duration::from_millis(8) {
-                        let wait = Duration::from_millis(8) - elapsed;
-                        thread::sleep(wait);
-                    }
-
-                    match stop_receiver.try_recv() {
-                        Ok(_) | Err(TryRecvError::Disconnected) => {
-                            log::info!("terminating the simulation loop");
-                            break;
-                        }
-                        _ => {}
-                    }
+                while should_continue() {
+                    update_timer.throttled_tick(Duration::from_millis(15));
 
                     let bounds = Bounds {
                         left: -20.0,
@@ -67,7 +57,7 @@ impl Sim {
                         top: 20.0,
                         margin: 0.5,
                     };
-                    let dt = 0.008;
+                    let dt = 0.015;
                     for vehicle in &mut vehicles {
                         vehicle.enforce_bounds(&bounds);
                         vehicle.integrate(dt);

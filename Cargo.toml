@@ -13,7 +13,7 @@ anyhow = "1.0.38"
 nalgebra = "0.25.0"
 log = "0.4.13"
 triple_buffer = "*"
-rayon = "1.5"
+spin_sleep = "1.0.0"
 
 [dependencies.textwrap]
 features = ["terminal_size"]
