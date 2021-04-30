@@ -1,4 +1,4 @@
-use draw2d::{Layer, Vertex};
+use draw2d::Vertex;
 
 type Vec2 = nalgebra::Vector2<f32>;
 
@@ -8,21 +8,6 @@ pub struct Bounds {
     pub bottom: f32,
     pub top: f32,
     pub margin: f32,
-}
-
-impl Bounds {
-    pub fn create(_window: &glfw::Window) -> Self {
-        let half_width = 20.0;
-        let half_height = 20.0;
-
-        Self {
-            left: -half_width,
-            right: half_width,
-            bottom: -half_height,
-            top: half_height,
-            margin: f32::min(half_height, half_width) * 0.05,
-        }
-    }
 }
 
 #[derive(Debug, Copy, Clone)]

@@ -1,104 +1,71 @@
+mod background;
+mod simulation;
 mod vehicle;
 
-use agents::app::{App, State, UpdateTimer};
+use agents::app::{App, State};
+use simulation::{Simulation, Worker};
 use vehicle::{Bounds, Vehicle};
 
 use anyhow::Result;
 use draw2d::{
     camera::{default_camera_controls, OrthoCamera},
-    Graphics, LayerHandle, Vertex,
+    Graphics, LayerHandle,
 };
-use std::sync::mpsc::{self, Sender, TryRecvError};
-use std::{thread, time::Duration};
-use triple_buffer::{Output, TripleBuffer};
+use std::time::Duration;
+use triple_buffer::Input;
 
-struct Sim {
-    join_handle: Option<thread::JoinHandle<()>>,
-    stop_sender: Sender<()>,
-    output_buffer: Output<Vec<Vehicle>>,
+struct VehicleWorld {
+    vehicles: Vec<Vehicle>,
 }
 
-impl Sim {
-    fn new() -> Result<Self> {
-        let mut update_timer = UpdateTimer::new("Sim Timer");
-        let vertex_buffer = TripleBuffer::new(vec![]);
-        let (mut input_buffer, output_buffer) = vertex_buffer.split();
-        let (stop_sender, stop_receiver) = mpsc::channel();
-        let mut vehicles = vec![];
+impl VehicleWorld {
+    fn new() -> Self {
+        Self { vehicles: vec![] }
+    }
 
-        let should_continue = move || match stop_receiver.try_recv() {
-            Ok(_) | Err(TryRecvError::Disconnected) => false,
-            _ => true,
+    fn flush(&self, sync: &mut Input<Vec<Vehicle>>) {
+        sync.input_buffer().clear();
+        sync.input_buffer().extend_from_slice(&self.vehicles);
+        sync.publish();
+    }
+}
+
+impl Simulation<Vec<Vehicle>> for VehicleWorld {
+    fn setup(&mut self, sync: &mut Input<Vec<Vehicle>>) {
+        let max = 10000;
+        for i in 0..max {
+            let norm = i as f32 / max as f32;
+            let angle = norm * std::f32::consts::TAU;
+            self.vehicles.push(Vehicle::new(
+                [angle.cos() * 10.0, angle.sin() * 10.0],
+                [angle.cos() * 2.0, angle.sin() * 2.0],
+            ));
+        }
+        self.flush(sync);
+    }
+
+    fn tick(&mut self, sync: &mut Input<Vec<Vehicle>>, _: Duration) {
+        let bounds = Bounds {
+            left: -20.0,
+            right: 20.0,
+            bottom: -20.0,
+            top: 20.0,
+            margin: 0.5,
         };
 
-        let join_handle = thread::Builder::new()
-            .name("simulation thread".to_owned())
-            .spawn(move || {
-                let max = 100000;
-                for i in 0..max {
-                    let norm = i as f32 / max as f32;
-                    let angle = norm * std::f32::consts::TAU;
-                    vehicles.push(Vehicle::new(
-                        [angle.cos() * 10.0, angle.sin() * 10.0],
-                        [angle.cos() * 2.0, angle.sin() * 2.0],
-                    ));
-                }
-                input_buffer.input_buffer().clear();
-                input_buffer.input_buffer().extend_from_slice(&vehicles);
-                input_buffer.publish();
-
-                while should_continue() {
-                    update_timer.throttled_tick(Duration::from_millis(15));
-
-                    let bounds = Bounds {
-                        left: -20.0,
-                        right: 20.0,
-                        bottom: -20.0,
-                        top: 20.0,
-                        margin: 0.5,
-                    };
-                    let dt = 0.015;
-                    for vehicle in &mut vehicles {
-                        vehicle.enforce_bounds(&bounds);
-                        vehicle.integrate(dt);
-                    }
-
-                    input_buffer.input_buffer().clear();
-                    input_buffer.input_buffer().extend_from_slice(&vehicles);
-                    input_buffer.publish();
-                }
-            })?;
-
-        Ok(Self {
-            join_handle: Some(join_handle),
-            stop_sender,
-            output_buffer,
-        })
-    }
-
-    fn vehicles(&mut self) -> &[Vehicle] {
-        self.output_buffer.read()
-    }
-}
-
-impl Drop for Sim {
-    fn drop(&mut self) {
-        log::info!("waiting for sim to drop");
-        self.stop_sender
-            .send(())
-            .expect("unable to send a stop signal to the simulation thread");
-        self.join_handle
-            .take()
-            .unwrap()
-            .join()
-            .expect("unable to join the simulation thread");
+        let dt = 0.015;
+        for vehicle in &mut self.vehicles {
+            vehicle.enforce_bounds(&bounds);
+            vehicle.integrate(dt);
+        }
+        self.flush(sync);
     }
 }
 
 struct Demo {
     layer: LayerHandle,
     camera: OrthoCamera,
-    sim: Sim,
+    sim: Worker<Vec<Vehicle>>,
 }
 
 impl Demo {
@@ -107,7 +74,7 @@ impl Demo {
         Ok(Self {
             layer: graphics.add_layer_to_top(),
             camera: OrthoCamera::with_viewport(20.0, w as f32 / h as f32),
-            sim: Sim::new()?,
+            sim: Worker::new(Duration::from_millis(15), VehicleWorld::new)?,
         })
     }
 }
@@ -119,63 +86,7 @@ impl State for Demo {
         graphics: &mut draw2d::Graphics,
     ) -> Result<()> {
         graphics.set_projection(&self.camera.as_matrix());
-
-        let background = graphics.add_layer_to_bottom();
-        let grid_cell = graphics.add_texture("./assets/GridCell.png")?;
-
-        {
-            let bg = graphics.get_layer_mut(&background).unwrap();
-            bg.set_texture(grid_cell);
-
-            let size = 20.0;
-            let grid_spacing = 2.0;
-            let grid_size = (size * 2.0) / grid_spacing;
-            bg.push_vertices(&[
-                // top left
-                Vertex {
-                    pos: [-size, size],
-                    uv: [0.0, 0.0],
-                    rgba: [0.2, 0.2, 0.4, 1.0],
-                    ..Default::default()
-                },
-                // top right
-                Vertex {
-                    pos: [size, size],
-                    uv: [grid_size, 0.0],
-                    rgba: [0.2, 0.2, 0.4, 1.0],
-                    ..Default::default()
-                },
-                // bottom right
-                Vertex {
-                    pos: [size, -size],
-                    uv: [grid_size, grid_size],
-                    rgba: [0.2, 0.2, 0.4, 1.0],
-                    ..Default::default()
-                },
-                // top left
-                Vertex {
-                    pos: [-size, size],
-                    uv: [0.0, 0.0],
-                    rgba: [0.2, 0.2, 0.4, 1.0],
-                    ..Default::default()
-                },
-                // bottom right
-                Vertex {
-                    pos: [size, -size],
-                    uv: [grid_size, grid_size],
-                    rgba: [0.2, 0.2, 0.4, 1.0],
-                    ..Default::default()
-                },
-                // bottom left
-                Vertex {
-                    pos: [-size, -size],
-                    uv: [0.0, grid_size],
-                    rgba: [0.2, 0.2, 0.4, 1.0],
-                },
-            ]);
-        }
-
-        Ok(())
+        self.build_background_layer(graphics)
     }
 
     fn update(
@@ -188,7 +99,7 @@ impl State for Demo {
 
         let layer = graphics.get_layer_mut(&self.layer).unwrap();
         layer.clear();
-        for vehicle in self.sim.vehicles() {
+        for vehicle in self.sim.state() {
             layer.push_vertices(&vehicle.draw());
         }
 
