@@ -75,29 +75,57 @@
 <span id="72">72</span>
 <span id="73">73</span>
 <span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
+<span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">agents</span>::<span class="ident">app</span>::{<span class="ident">App</span>, <span class="ident">State</span>};
 
 <span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">Context</span>, <span class="prelude-ty">Result</span>};
-<span class="kw">use</span> <span class="ident">draw2d</span>::{<span class="ident">Graphics</span>, <span class="ident">LayerHandle</span>, <span class="ident">TextureHandle</span>, <span class="ident">Vertex</span>};
+<span class="kw">use</span> <span class="ident">draw2d</span>::{
+    <span class="ident">camera</span>::{<span class="ident">default_camera_controls</span>, <span class="ident">OrthoCamera</span>},
+    <span class="ident">Graphics</span>, <span class="ident">LayerHandle</span>, <span class="ident">TextureHandle</span>, <span class="ident">Vertex</span>,
+};
 <span class="kw">use</span> <span class="ident">glfw</span>::<span class="ident">Window</span>;
 
 <span class="kw">struct</span> <span class="ident">Demo</span> {
     <span class="ident">texture</span>: <span class="ident">TextureHandle</span>,
     <span class="ident">layer</span>: <span class="ident">LayerHandle</span>,
+    <span class="ident">camera</span>: <span class="ident">OrthoCamera</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Demo</span> {
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">_w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">glfw</span>::<span class="ident">Window</span>, <span class="ident">graphics</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Graphics</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">window</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">glfw</span>::<span class="ident">Window</span>, <span class="ident">graphics</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Graphics</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> (<span class="ident">w</span>, <span class="ident">h</span>) <span class="op">=</span> <span class="ident">window</span>.<span class="ident">get_size</span>();
         <span class="prelude-val">Ok</span>(<span class="self">Self</span> {
             <span class="ident">texture</span>: <span class="ident">graphics</span>.<span class="ident">add_texture</span>(<span class="string">&quot;assets/example.png&quot;</span>)<span class="question-mark">?</span>,
             <span class="ident">layer</span>: <span class="ident">graphics</span>.<span class="ident">add_layer_to_top</span>(),
+            <span class="ident">camera</span>: <span class="ident">OrthoCamera</span>::<span class="ident">with_viewport</span>(<span class="ident">w</span> <span class="kw">as</span> <span class="ident">f32</span>, <span class="ident">w</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="ident">h</span> <span class="kw">as</span> <span class="ident">f32</span>),
         })
     }
 }
 
 <span class="kw">impl</span> <span class="ident">State</span> <span class="kw">for</span> <span class="ident">Demo</span> {
     <span class="kw">fn</span> <span class="ident">init</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">_w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Window</span>, <span class="ident">graphics</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Graphics</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="ident">graphics</span>.<span class="ident">set_projection</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">camera</span>.<span class="ident">as_matrix</span>());
+
         <span class="kw">let</span> <span class="ident">layer</span> <span class="op">=</span> <span class="ident">graphics</span>
             .<span class="ident">get_layer_mut</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">layer</span>)
             .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="string">&quot;invalid layer handle???&quot;</span>)<span class="question-mark">?</span>;
@@ -107,42 +135,54 @@
         <span class="ident">layer</span>.<span class="ident">push_vertices</span>(<span class="kw-2">&amp;</span>[
             <span class="comment">// top left</span>
             <span class="ident">Vertex</span> {
-                <span class="ident">pos</span>: [<span class="op">-</span><span class="ident">size</span>, <span class="op">-</span><span class="ident">size</span>],
+                <span class="ident">pos</span>: [<span class="op">-</span><span class="ident">size</span>, <span class="ident">size</span>],
                 <span class="ident">uv</span>: [<span class="number">0.0</span>, <span class="number">0.0</span>],
                 ..<span class="ident">Default</span>::<span class="ident">default</span>()
             },
             <span class="comment">// top right</span>
             <span class="ident">Vertex</span> {
-                <span class="ident">pos</span>: [<span class="ident">size</span>, <span class="op">-</span><span class="ident">size</span>],
+                <span class="ident">pos</span>: [<span class="ident">size</span>, <span class="ident">size</span>],
                 <span class="ident">uv</span>: [<span class="number">1.0</span>, <span class="number">0.0</span>],
                 ..<span class="ident">Default</span>::<span class="ident">default</span>()
             },
             <span class="comment">// bottom right</span>
             <span class="ident">Vertex</span> {
-                <span class="ident">pos</span>: [<span class="ident">size</span>, <span class="ident">size</span>],
+                <span class="ident">pos</span>: [<span class="ident">size</span>, <span class="op">-</span><span class="ident">size</span>],
                 <span class="ident">uv</span>: [<span class="number">1.0</span>, <span class="number">1.0</span>],
                 ..<span class="ident">Default</span>::<span class="ident">default</span>()
             },
             <span class="comment">// top left</span>
             <span class="ident">Vertex</span> {
-                <span class="ident">pos</span>: [<span class="op">-</span><span class="ident">size</span>, <span class="op">-</span><span class="ident">size</span>],
+                <span class="ident">pos</span>: [<span class="op">-</span><span class="ident">size</span>, <span class="ident">size</span>],
                 <span class="ident">uv</span>: [<span class="number">0.0</span>, <span class="number">0.0</span>],
                 ..<span class="ident">Default</span>::<span class="ident">default</span>()
             },
             <span class="comment">// bottom right</span>
             <span class="ident">Vertex</span> {
-                <span class="ident">pos</span>: [<span class="ident">size</span>, <span class="ident">size</span>],
+                <span class="ident">pos</span>: [<span class="ident">size</span>, <span class="op">-</span><span class="ident">size</span>],
                 <span class="ident">uv</span>: [<span class="number">1.0</span>, <span class="number">1.0</span>],
                 ..<span class="ident">Default</span>::<span class="ident">default</span>()
             },
             <span class="comment">// bottom left</span>
             <span class="ident">Vertex</span> {
-                <span class="ident">pos</span>: [<span class="op">-</span><span class="ident">size</span>, <span class="ident">size</span>],
+                <span class="ident">pos</span>: [<span class="op">-</span><span class="ident">size</span>, <span class="op">-</span><span class="ident">size</span>],
                 <span class="ident">uv</span>: [<span class="number">0.0</span>, <span class="number">1.0</span>],
                 ..<span class="ident">Default</span>::<span class="ident">default</span>()
             },
         ]);
 
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="kw">fn</span> <span class="ident">handle_event</span>(
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">window_event</span>: <span class="kw-2">&amp;</span><span class="ident">glfw</span>::<span class="ident">WindowEvent</span>,
+        <span class="ident">_window</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">glfw</span>::<span class="ident">Window</span>,
+        <span class="ident">graphics</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">draw2d</span>::<span class="ident">Graphics</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="ident">default_camera_controls</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">camera</span>, <span class="kw-2">&amp;</span><span class="ident">window_event</span>) {
+            <span class="ident">graphics</span>.<span class="ident">set_projection</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">camera</span>.<span class="ident">as_matrix</span>());
+        }
         <span class="prelude-val">Ok</span>(())
     }
 }

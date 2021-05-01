@@ -153,6 +153,9 @@
 <span id="150">150</span>
 <span id="151">151</span>
 <span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! The application structure and supporting traits.</span>
 <span class="doccomment">//!</span>
@@ -295,7 +298,10 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// The timer prints the average update duration to the terminal. It only does</span>
 <span class="doccomment">/// this every few seconds to prevent terminal IO from becoming a bottleneck.</span>
-<span class="kw">struct</span> <span class="ident">UpdateTimer</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateTimer</span> {
+    <span class="doccomment">/// The timer&#39;s display name</span>
+    <span class="ident">display_name</span>: <span class="ident">String</span>,
+
     <span class="doccomment">/// The timestamp recorded for the last update.</span>
     <span class="ident">last_update</span>: <span class="ident">Instant</span>,
 

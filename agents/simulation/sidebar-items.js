@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Worker","A Simulation worker owns a thread which runs a simulation asynchronously."]],"trait":[["Simulation","A simulation is a type with State. State is advanced in fixed time steps and is presented via the triple-buffer's Input interface."]]});

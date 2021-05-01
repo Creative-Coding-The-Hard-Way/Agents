@@ -107,7 +107,12 @@
 <span id="104">104</span>
 <span id="105">105</span>
 <span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
 </pre><div class="example-wrap"><pre class="rust ">
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">app</span>::<span class="ident">UpdateTimer</span>;
+
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">App</span>, <span class="ident">State</span>};
 
 <span class="kw">use</span> <span class="ident">anyhow</span>::<span class="prelude-ty">Result</span>;
@@ -137,13 +142,14 @@
         <span class="ident">window_surface</span>.<span class="ident">window</span>.<span class="ident">set_resizable</span>(<span class="bool-val">true</span>);
         <span class="ident">window_surface</span>.<span class="ident">window</span>.<span class="ident">set_key_polling</span>(<span class="bool-val">true</span>);
         <span class="ident">window_surface</span>.<span class="ident">window</span>.<span class="ident">set_size_polling</span>(<span class="bool-val">true</span>);
+        <span class="ident">window_surface</span>.<span class="ident">window</span>.<span class="ident">set_scroll_polling</span>(<span class="bool-val">true</span>);
 
         <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">build_state</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">window_surface</span>.<span class="ident">window</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">graphics</span>)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(<span class="self">Self</span> {
             <span class="ident">graphics</span>,
             <span class="ident">window_surface</span>,
-            <span class="ident">update_timer</span>: <span class="ident">Default</span>::<span class="ident">default</span>(),
+            <span class="ident">update_timer</span>: <span class="ident">UpdateTimer</span>::<span class="ident">new</span>(<span class="string">&quot;Render Duration&quot;</span>),
             <span class="ident">state</span>,
         })
     }

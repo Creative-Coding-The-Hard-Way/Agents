@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["app","The application structure and supporting traits."]]});
+initSidebarItems({"mod":[["app","The application structure and supporting traits."],["simulation","This module provides types and functions for modelling an asynchronous, stateful, simulation."]]});
