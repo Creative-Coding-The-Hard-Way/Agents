@@ -139,7 +139,10 @@ pub struct App<S: State> {
 ///
 /// The timer prints the average update duration to the terminal. It only does
 /// this every few seconds to prevent terminal IO from becoming a bottleneck.
-struct UpdateTimer {
+pub struct UpdateTimer {
+    /// The timer's display name
+    display_name: String,
+
     /// The timestamp recorded for the last update.
     last_update: Instant,
 

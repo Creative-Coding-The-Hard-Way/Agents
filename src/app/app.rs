@@ -1,3 +1,5 @@
+use crate::app::UpdateTimer;
+
 use super::{App, State};
 
 use anyhow::Result;
@@ -27,13 +29,14 @@ impl<S: State> App<S> {
         window_surface.window.set_resizable(true);
         window_surface.window.set_key_polling(true);
         window_surface.window.set_size_polling(true);
+        window_surface.window.set_scroll_polling(true);
 
         let state = build_state(&mut window_surface.window, &mut graphics)?;
 
         Ok(Self {
             graphics,
             window_surface,
-            update_timer: Default::default(),
+            update_timer: UpdateTimer::new("Render Duration"),
             state,
         })
     }

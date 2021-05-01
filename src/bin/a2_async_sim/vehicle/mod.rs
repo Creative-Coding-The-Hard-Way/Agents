@@ -1,30 +1,16 @@
-use draw2d::{Layer, Vertex};
+use draw2d::Vertex;
 
 type Vec2 = nalgebra::Vector2<f32>;
 
 pub struct Bounds {
-    left: f32,
-    right: f32,
-    bottom: f32,
-    top: f32,
-    margin: f32,
+    pub left: f32,
+    pub right: f32,
+    pub bottom: f32,
+    pub top: f32,
+    pub margin: f32,
 }
 
-impl Bounds {
-    pub fn create(_window: &glfw::Window) -> Self {
-        let half_width = 20.0;
-        let half_height = 20.0;
-
-        Self {
-            left: -half_width,
-            right: half_width,
-            bottom: -half_height,
-            top: half_height,
-            margin: f32::min(half_height, half_width) * 0.05,
-        }
-    }
-}
-
+#[derive(Debug, Copy, Clone)]
 pub struct Vehicle {
     pos: Vec2,
     vel: Vec2,
@@ -105,7 +91,7 @@ impl Vehicle {
     }
 
     /// Draw the vehicle as a triangle to a single graphics layer.
-    pub fn draw(&self, layer: &mut Layer) {
+    pub fn draw(&self) -> [Vertex; 3] {
         const SIZE: f32 = 1.0;
 
         let look = self.vel.normalize();
@@ -116,7 +102,7 @@ impl Vehicle {
         let right = self.pos + (look_right * SIZE * 0.15) + (look * -0.5);
         let left = self.pos + (look_left * SIZE * 0.15) + (look * -0.5);
 
-        layer.push_vertices(&[
+        [
             Vertex {
                 pos: front.into(),
                 ..Default::default()
@@ -129,7 +115,7 @@ impl Vehicle {
                 pos: left.into(),
                 ..Default::default()
             },
-        ]);
+        ]
     }
 }
 
