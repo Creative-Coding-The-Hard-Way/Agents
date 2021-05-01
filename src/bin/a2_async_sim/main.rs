@@ -1,9 +1,10 @@
 mod background;
-mod simulation;
 mod vehicle;
 
-use agents::app::{App, State};
-use simulation::{Simulation, Worker};
+use agents::{
+    app::{App, State},
+    simulation::{Simulation, Worker},
+};
 use vehicle::{Bounds, Vehicle};
 
 use anyhow::Result;
@@ -30,8 +31,10 @@ impl VehicleWorld {
     }
 }
 
-impl Simulation<Vec<Vehicle>> for VehicleWorld {
-    fn setup(&mut self, sync: &mut Input<Vec<Vehicle>>) {
+impl Simulation for VehicleWorld {
+    type SyncState = Vec<Vehicle>;
+
+    fn setup(&mut self, sync: &mut Input<Self::SyncState>) {
         let max = 10000;
         for i in 0..max {
             let norm = i as f32 / max as f32;
@@ -44,7 +47,7 @@ impl Simulation<Vec<Vehicle>> for VehicleWorld {
         self.flush(sync);
     }
 
-    fn tick(&mut self, sync: &mut Input<Vec<Vehicle>>, _: Duration) {
+    fn tick(&mut self, sync: &mut Input<Self::SyncState>, _: Duration) {
         let bounds = Bounds {
             left: -20.0,
             right: 20.0,
@@ -53,7 +56,7 @@ impl Simulation<Vec<Vehicle>> for VehicleWorld {
             margin: 0.5,
         };
 
-        let dt = 0.015;
+        let dt = Self::TICK_THROTTLE.as_secs_f32();
         for vehicle in &mut self.vehicles {
             vehicle.enforce_bounds(&bounds);
             vehicle.integrate(dt);
@@ -65,7 +68,7 @@ impl Simulation<Vec<Vehicle>> for VehicleWorld {
 struct Demo {
     layer: LayerHandle,
     camera: OrthoCamera,
-    sim: Worker<Vec<Vehicle>>,
+    sim: Worker<VehicleWorld>,
 }
 
 impl Demo {
@@ -74,7 +77,7 @@ impl Demo {
         Ok(Self {
             layer: graphics.add_layer_to_top(),
             camera: OrthoCamera::with_viewport(20.0, w as f32 / h as f32),
-            sim: Worker::new(Duration::from_millis(15), VehicleWorld::new)?,
+            sim: Worker::new(VehicleWorld::new)?,
         })
     }
 }

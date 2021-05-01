@@ -1,50 +1,22 @@
-use agents::app::UpdateTimer;
+use super::{Simulation, Worker};
+
+use crate::app::UpdateTimer;
 use anyhow::Result;
 use std::{
-    sync::mpsc::{self, Sender, TryRecvError},
+    sync::mpsc::{self, TryRecvError},
     thread,
-    time::Duration,
 };
-use triple_buffer::{Input, Output, TripleBuffer};
+use triple_buffer::TripleBuffer;
 
-/// A simulation is a type which owns a persistent state which it updates
-/// asynchronously.
-///
-/// Updates are made available to the main thread via a triple buffer which
-/// allows the simulation and main thread to update at different rates without
-/// blocking.
-pub trait Simulation<State: Send> {
-    /// Initialize the simulation. Called once right before starting the main
-    /// loop.
-    fn setup(&mut self, sync: &mut Input<State>);
-
-    /// Advance the simulation by one time step (fixed steps).
-    fn tick(&mut self, sync: &mut Input<State>, duration: Duration);
-}
-
-/// A Simulation worker owns a thread which runs a simulation asynchronously.
-pub struct Worker<State: Send> {
-    join_handle: Option<thread::JoinHandle<()>>,
-    stop_sender: Sender<()>,
-    output_buffer: Output<State>,
-}
-
-impl<T: 'static + Send + Clone + Default> Worker<T> {
+impl<TSim: 'static + Simulation> Worker<TSim> {
     /// Create a new simulation worker instance.
-    ///
-    /// # Note
-    ///
-    /// The state must be default-constructable to initialize the triple buffer.
-    pub fn new<S: 'static + Simulation<T>>(
-        throttle: Duration,
-        create: fn() -> S,
-    ) -> Result<Self> {
+    pub fn new(create: fn() -> TSim) -> Result<Self> {
         // a channel is used to signal when the worker should terminate
         let (stop_sender, stop_receiver) = mpsc::channel();
 
         // a triple-buffer with initial data set to the default
         let (mut input_buffer, output_buffer) =
-            TripleBuffer::new(T::default()).split();
+            TripleBuffer::new(TSim::SyncState::default()).split();
 
         let should_continue = move || match stop_receiver.try_recv() {
             Ok(_) | Err(TryRecvError::Disconnected) => false,
@@ -54,13 +26,15 @@ impl<T: 'static + Send + Clone + Default> Worker<T> {
         let join_handle = thread::Builder::new()
             .name("simulation thread".to_owned())
             .spawn(move || {
+                // Create the simulation
                 let mut simulation = create();
                 let mut update_timer = UpdateTimer::new("Sim Timer");
 
                 simulation.setup(&mut input_buffer);
 
                 while should_continue() {
-                    let tick_time = update_timer.throttled_tick(throttle);
+                    let tick_time =
+                        update_timer.throttled_tick(TSim::TICK_THROTTLE);
                     simulation.tick(&mut input_buffer, tick_time);
                 }
             })?;
@@ -77,12 +51,12 @@ impl<T: 'static + Send + Clone + Default> Worker<T> {
     /// Repeated calls to this function can and will return different results
     /// as the simulation ticks in the background. The reference is valid until
     /// the next call to state().
-    pub fn state(&mut self) -> &T {
+    pub fn state(&mut self) -> &TSim::SyncState {
         self.output_buffer.read()
     }
 }
 
-impl<T: Send> Drop for Worker<T> {
+impl<TSim: Simulation> Drop for Worker<TSim> {
     /// Send the worker a stop signal then join the thread.
     fn drop(&mut self) {
         log::trace!("waiting for sim to drop");
