@@ -1,68 +1,62 @@
 use super::Demo;
 
 use anyhow::Result;
-use draw2d::{Graphics, Vertex};
+use draw2d::graphics::{layer::Batch, vertex::Vertex2d, Graphics};
 
 impl Demo {
     /// Render the background grid geometry below all other geometry for the
     /// frame.
-    pub fn build_background_layer(
-        &self,
-        graphics: &mut Graphics,
-    ) -> Result<()> {
-        let background = graphics.add_layer_to_bottom();
-        let grid_cell = graphics.add_texture("./assets/GridCell.png")?;
-
-        let bg = graphics.get_layer_mut(&background).unwrap();
-        bg.set_texture(grid_cell);
+    pub fn build_background(&self, graphics: &mut Graphics) -> Result<Batch> {
+        let mut background = Batch::empty();
+        background.texture_handle =
+            graphics.add_texture("./assets/GridCell.png")?;
 
         let size = 20.0;
         let grid_spacing = 4.0;
         let grid_size = (size * 2.0) / grid_spacing;
-        bg.push_vertices(&[
+        background.vertices.extend_from_slice(&[
             // top left
-            Vertex {
+            Vertex2d {
                 pos: [-size, size],
                 uv: [0.0, 0.0],
                 rgba: [0.2, 0.2, 0.4, 1.0],
                 ..Default::default()
             },
             // top right
-            Vertex {
+            Vertex2d {
                 pos: [size, size],
                 uv: [grid_size, 0.0],
                 rgba: [0.2, 0.2, 0.4, 1.0],
                 ..Default::default()
             },
             // bottom right
-            Vertex {
+            Vertex2d {
                 pos: [size, -size],
                 uv: [grid_size, grid_size],
                 rgba: [0.2, 0.2, 0.4, 1.0],
                 ..Default::default()
             },
             // top left
-            Vertex {
+            Vertex2d {
                 pos: [-size, size],
                 uv: [0.0, 0.0],
                 rgba: [0.2, 0.2, 0.4, 1.0],
                 ..Default::default()
             },
             // bottom right
-            Vertex {
+            Vertex2d {
                 pos: [size, -size],
                 uv: [grid_size, grid_size],
                 rgba: [0.2, 0.2, 0.4, 1.0],
                 ..Default::default()
             },
             // bottom left
-            Vertex {
+            Vertex2d {
                 pos: [-size, -size],
                 uv: [0.0, grid_size],
                 rgba: [0.2, 0.2, 0.4, 1.0],
             },
         ]);
-
-        Ok(())
+        Ok(background)
     }
 }

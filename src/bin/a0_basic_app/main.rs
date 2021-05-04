@@ -1,9 +1,14 @@
 use agents::app::{App, State};
 
-use anyhow::{Context, Result};
+use anyhow::Result;
 use draw2d::{
     camera::{default_camera_controls, OrthoCamera},
-    Graphics, LayerHandle, TextureHandle, Vertex,
+    graphics::{
+        layer::{Batch, LayerHandle},
+        texture_atlas::TextureHandle,
+        vertex::Vertex2d,
+        Graphics,
+    },
 };
 use glfw::Window;
 
@@ -26,52 +31,52 @@ impl Demo {
 
 impl State for Demo {
     fn init(&mut self, _w: &mut Window, graphics: &mut Graphics) -> Result<()> {
-        graphics.set_projection(&self.camera.as_matrix());
-
-        let layer = graphics
-            .get_layer_mut(&self.layer)
-            .with_context(|| "invalid layer handle???")?;
-        layer.set_texture(self.texture);
+        let mut quad = Batch::empty();
+        quad.texture_handle = self.texture;
 
         let size = 200.0;
-        layer.push_vertices(&[
+        quad.vertices.extend_from_slice(&[
             // top left
-            Vertex {
+            Vertex2d {
                 pos: [-size, size],
                 uv: [0.0, 0.0],
                 ..Default::default()
             },
             // top right
-            Vertex {
+            Vertex2d {
                 pos: [size, size],
                 uv: [1.0, 0.0],
                 ..Default::default()
             },
             // bottom right
-            Vertex {
+            Vertex2d {
                 pos: [size, -size],
                 uv: [1.0, 1.0],
                 ..Default::default()
             },
             // top left
-            Vertex {
+            Vertex2d {
                 pos: [-size, size],
                 uv: [0.0, 0.0],
                 ..Default::default()
             },
             // bottom right
-            Vertex {
+            Vertex2d {
                 pos: [size, -size],
                 uv: [1.0, 1.0],
                 ..Default::default()
             },
             // bottom left
-            Vertex {
+            Vertex2d {
                 pos: [-size, -size],
                 uv: [0.0, 1.0],
                 ..Default::default()
             },
         ]);
+
+        let layer = graphics.get_layer_mut(&self.layer);
+        layer.set_projection(self.camera.as_matrix());
+        layer.push_batch(quad);
 
         Ok(())
     }
@@ -80,10 +85,12 @@ impl State for Demo {
         &mut self,
         window_event: &glfw::WindowEvent,
         _window: &mut glfw::Window,
-        graphics: &mut draw2d::Graphics,
+        graphics: &mut Graphics,
     ) -> Result<()> {
         if default_camera_controls(&mut self.camera, &window_event) {
-            graphics.set_projection(&self.camera.as_matrix());
+            graphics
+                .get_layer_mut(&self.layer)
+                .set_projection(self.camera.as_matrix());
         }
         Ok(())
     }

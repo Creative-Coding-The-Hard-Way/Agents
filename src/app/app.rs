@@ -3,7 +3,7 @@ use crate::app::UpdateTimer;
 use super::{App, State};
 
 use anyhow::Result;
-use draw2d::{GlfwWindow, Graphics};
+use draw2d::{graphics::Graphics, GlfwWindow};
 use flexi_logger::{DeferredNow, Logger, Record};
 use glfw::WindowEvent;
 use std::fmt::Write as FmtWrite;

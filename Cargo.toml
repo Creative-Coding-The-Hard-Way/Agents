@@ -22,3 +22,6 @@ version = "0.13.2"
 [dependencies.glfw]
 version = "0.41.0"
 features = [ "vulkan" ]
+
+[profile.dev]
+opt-level = 1

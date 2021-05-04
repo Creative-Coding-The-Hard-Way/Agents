@@ -1,4 +1,4 @@
-use draw2d::{Layer, Vertex};
+use draw2d::graphics::{layer::Batch, vertex::Vertex2d};
 
 type Vec2 = nalgebra::Vector2<f32>;
 
@@ -105,7 +105,7 @@ impl Vehicle {
     }
 
     /// Draw the vehicle as a triangle to a single graphics layer.
-    pub fn draw(&self, layer: &mut Layer) {
+    pub fn draw(&self, batch: &mut Batch) {
         const SIZE: f32 = 1.0;
 
         let look = self.vel.normalize();
@@ -116,16 +116,16 @@ impl Vehicle {
         let right = self.pos + (look_right * SIZE * 0.15) + (look * -0.5);
         let left = self.pos + (look_left * SIZE * 0.15) + (look * -0.5);
 
-        layer.push_vertices(&[
-            Vertex {
+        batch.vertices.extend_from_slice(&[
+            Vertex2d {
                 pos: front.into(),
                 ..Default::default()
             },
-            Vertex {
+            Vertex2d {
                 pos: right.into(),
                 ..Default::default()
             },
-            Vertex {
+            Vertex2d {
                 pos: left.into(),
                 ..Default::default()
             },

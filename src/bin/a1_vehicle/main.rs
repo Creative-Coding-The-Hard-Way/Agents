@@ -6,13 +6,18 @@ use vehicle::{Bounds, Vehicle};
 use anyhow::Result;
 use draw2d::{
     camera::{default_camera_controls, OrthoCamera},
-    Graphics, LayerHandle, Vertex,
+    graphics::{
+        layer::{Batch, LayerHandle},
+        vertex::Vertex2d,
+        Graphics,
+    },
 };
 
 use std::time::Duration;
 
 struct Demo {
-    layer: LayerHandle,
+    background_layer: LayerHandle,
+    foreground_layer: LayerHandle,
     vehicles: Vec<Vehicle>,
     camera: OrthoCamera,
 }
@@ -33,10 +38,20 @@ impl Demo {
             ));
         }
         Ok(Self {
-            layer: graphics.add_layer_to_top(),
+            background_layer: graphics.add_layer_to_bottom(),
+            foreground_layer: graphics.add_layer_to_top(),
             vehicles,
             camera: OrthoCamera::with_viewport(20.0, w as f32 / h as f32),
         })
+    }
+
+    fn update_projection(&self, graphics: &mut Graphics) {
+        graphics
+            .get_layer_mut(&self.background_layer)
+            .set_projection(self.camera.as_matrix());
+        graphics
+            .get_layer_mut(&self.foreground_layer)
+            .set_projection(self.camera.as_matrix());
     }
 }
 
@@ -44,64 +59,59 @@ impl State for Demo {
     fn init(
         &mut self,
         _window: &mut glfw::Window,
-        graphics: &mut draw2d::Graphics,
+        graphics: &mut Graphics,
     ) -> Result<()> {
-        graphics.set_projection(&self.camera.as_matrix());
+        self.update_projection(graphics);
 
-        let background = graphics.add_layer_to_bottom();
-        let grid_cell = graphics.add_texture("./assets/GridCell.png")?;
+        let mut background = Batch::empty();
+        background.texture_handle =
+            graphics.add_texture("./assets/GridCell.png")?;
 
-        {
-            let bg = graphics.get_layer_mut(&background).unwrap();
-            bg.set_texture(grid_cell);
+        let size = 20.0;
+        let grid_spacing = 2.0;
+        let grid_size = (size * 2.0) / grid_spacing;
+        background.vertices.extend_from_slice(&[
+            // top left
+            Vertex2d {
+                pos: [-size, size],
+                uv: [0.0, 0.0],
+                rgba: [0.2, 0.2, 0.4, 1.0],
+            },
+            // top right
+            Vertex2d {
+                pos: [size, size],
+                uv: [grid_size, 0.0],
+                rgba: [0.2, 0.2, 0.4, 1.0],
+            },
+            // bottom right
+            Vertex2d {
+                pos: [size, -size],
+                uv: [grid_size, grid_size],
+                rgba: [0.2, 0.2, 0.4, 1.0],
+            },
+            // top left
+            Vertex2d {
+                pos: [-size, size],
+                uv: [0.0, 0.0],
+                rgba: [0.2, 0.2, 0.4, 1.0],
+            },
+            // bottom right
+            Vertex2d {
+                pos: [size, -size],
+                uv: [grid_size, grid_size],
+                rgba: [0.2, 0.2, 0.4, 1.0],
+            },
+            // bottom left
+            Vertex2d {
+                pos: [-size, -size],
+                uv: [0.0, grid_size],
+                rgba: [0.2, 0.2, 0.4, 1.0],
+            },
+        ]);
 
-            let size = 20.0;
-            let grid_spacing = 2.0;
-            let grid_size = (size * 2.0) / grid_spacing;
-            bg.push_vertices(&[
-                // top left
-                Vertex {
-                    pos: [-size, size],
-                    uv: [0.0, 0.0],
-                    rgba: [0.2, 0.2, 0.4, 1.0],
-                    ..Default::default()
-                },
-                // top right
-                Vertex {
-                    pos: [size, size],
-                    uv: [grid_size, 0.0],
-                    rgba: [0.2, 0.2, 0.4, 1.0],
-                    ..Default::default()
-                },
-                // bottom right
-                Vertex {
-                    pos: [size, -size],
-                    uv: [grid_size, grid_size],
-                    rgba: [0.2, 0.2, 0.4, 1.0],
-                    ..Default::default()
-                },
-                // top left
-                Vertex {
-                    pos: [-size, size],
-                    uv: [0.0, 0.0],
-                    rgba: [0.2, 0.2, 0.4, 1.0],
-                    ..Default::default()
-                },
-                // bottom right
-                Vertex {
-                    pos: [size, -size],
-                    uv: [grid_size, grid_size],
-                    rgba: [0.2, 0.2, 0.4, 1.0],
-                    ..Default::default()
-                },
-                // bottom left
-                Vertex {
-                    pos: [-size, -size],
-                    uv: [0.0, grid_size],
-                    rgba: [0.2, 0.2, 0.4, 1.0],
-                },
-            ]);
-        }
+        graphics
+            .get_layer_mut(&self.background_layer)
+            .push_batch(background);
 
         Ok(())
     }
@@ -109,20 +119,21 @@ impl State for Demo {
     fn update(
         &mut self,
         window: &mut glfw::Window,
-        graphics: &mut draw2d::Graphics,
+        graphics: &mut Graphics,
         update_duration: Duration,
     ) -> Result<()> {
-        graphics.set_projection(&self.camera.as_matrix());
-        let layer = graphics.get_layer_mut(&self.layer).unwrap();
-        layer.clear();
-
+        let mut vehicle_batch = Batch::empty();
         let bounds = Bounds::create(window);
         let dt = update_duration.as_secs_f32();
         for vehicle in &mut self.vehicles {
             vehicle.enforce_bounds(&bounds);
             vehicle.integrate(dt);
-            vehicle.draw(layer);
+            vehicle.draw(&mut vehicle_batch);
         }
+
+        let layer = graphics.get_layer_mut(&self.foreground_layer);
+        layer.clear();
+        layer.push_batch(vehicle_batch);
 
         Ok(())
     }
@@ -131,10 +142,10 @@ impl State for Demo {
         &mut self,
         window_event: &glfw::WindowEvent,
         _window: &mut glfw::Window,
-        graphics: &mut draw2d::Graphics,
+        graphics: &mut Graphics,
     ) -> Result<()> {
         if default_camera_controls(&mut self.camera, &window_event) {
-            graphics.set_projection(&self.camera.as_matrix());
+            self.update_projection(graphics);
         }
         Ok(())
     }

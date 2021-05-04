@@ -10,7 +10,10 @@ use vehicle::{Bounds, Vehicle};
 use anyhow::Result;
 use draw2d::{
     camera::{default_camera_controls, OrthoCamera},
-    Graphics, LayerHandle,
+    graphics::{
+        layer::{Batch, LayerHandle},
+        Graphics,
+    },
 };
 use std::time::Duration;
 use triple_buffer::Input;
@@ -66,7 +69,8 @@ impl Simulation for VehicleWorld {
 }
 
 struct Demo {
-    layer: LayerHandle,
+    background_layer: LayerHandle,
+    foreground_layer: LayerHandle,
     camera: OrthoCamera,
     sim: Worker<VehicleWorld>,
 }
@@ -75,10 +79,21 @@ impl Demo {
     fn new(window: &mut glfw::Window, graphics: &mut Graphics) -> Result<Self> {
         let (w, h) = window.get_size();
         Ok(Self {
-            layer: graphics.add_layer_to_top(),
+            background_layer: graphics.add_layer_to_bottom(),
+            foreground_layer: graphics.add_layer_to_top(),
             camera: OrthoCamera::with_viewport(20.0, w as f32 / h as f32),
             sim: Worker::new(VehicleWorld::new)?,
         })
+    }
+
+    fn update_projection(&self, graphics: &mut Graphics) {
+        let matrix = self.camera.as_matrix();
+        graphics
+            .get_layer_mut(&self.background_layer)
+            .set_projection(matrix);
+        graphics
+            .get_layer_mut(&self.foreground_layer)
+            .set_projection(matrix);
     }
 }
 
@@ -86,25 +101,34 @@ impl State for Demo {
     fn init(
         &mut self,
         _window: &mut glfw::Window,
-        graphics: &mut draw2d::Graphics,
+        graphics: &mut Graphics,
     ) -> Result<()> {
-        graphics.set_projection(&self.camera.as_matrix());
-        self.build_background_layer(graphics)
+        self.update_projection(graphics);
+        let background = self.build_background(graphics)?;
+        graphics
+            .get_layer_mut(&self.background_layer)
+            .push_batch(background);
+        Ok(())
     }
 
     fn update(
         &mut self,
         _window: &mut glfw::Window,
-        graphics: &mut draw2d::Graphics,
+        graphics: &mut Graphics,
         _update_duration: Duration,
     ) -> Result<()> {
-        graphics.set_projection(&self.camera.as_matrix());
+        let vehicles = self.sim.state();
 
-        let layer = graphics.get_layer_mut(&self.layer).unwrap();
-        layer.clear();
+        let mut vehicle_batch = Batch::empty();
+        vehicle_batch.vertices.reserve(vehicles.len() * 3);
+
         for vehicle in self.sim.state() {
-            layer.push_vertices(&vehicle.draw());
+            vehicle_batch.vertices.extend_from_slice(&vehicle.draw());
         }
+
+        let layer = graphics.get_layer_mut(&self.foreground_layer);
+        layer.clear();
+        layer.push_batch(vehicle_batch);
 
         Ok(())
     }
@@ -113,10 +137,10 @@ impl State for Demo {
         &mut self,
         window_event: &glfw::WindowEvent,
         _window: &mut glfw::Window,
-        graphics: &mut draw2d::Graphics,
+        graphics: &mut Graphics,
     ) -> Result<()> {
         if default_camera_controls(&mut self.camera, &window_event) {
-            graphics.set_projection(&self.camera.as_matrix());
+            self.update_projection(graphics);
         }
         Ok(())
     }

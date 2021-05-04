@@ -68,7 +68,7 @@ mod app;
 mod update_timer;
 
 use anyhow::Result;
-use draw2d::{GlfwWindow, Graphics};
+use draw2d::{graphics::Graphics, GlfwWindow};
 use glfw::{Action, Key, WindowEvent};
 use std::time::{Duration, Instant};
 
@@ -85,7 +85,7 @@ pub trait State {
     fn init(
         &mut self,
         window: &mut glfw::Window,
-        graphics: &mut draw2d::Graphics,
+        graphics: &mut Graphics,
     ) -> Result<()> {
         Ok(())
     }
@@ -95,7 +95,7 @@ pub trait State {
     fn update(
         &mut self,
         window: &mut glfw::Window,
-        graphics: &mut draw2d::Graphics,
+        graphics: &mut Graphics,
         update_duration: Duration,
     ) -> Result<()> {
         Ok(())
@@ -110,7 +110,7 @@ pub trait State {
         &mut self,
         window_event: &glfw::WindowEvent,
         window: &mut glfw::Window,
-        graphics: &mut draw2d::Graphics,
+        graphics: &mut Graphics,
     ) -> Result<()> {
         match window_event {
             WindowEvent::Key(Key::Escape, _, Action::Press, _) => {

@@ -1,4 +1,4 @@
-use draw2d::Vertex;
+use draw2d::graphics::vertex::Vertex2d;
 
 type Vec2 = nalgebra::Vector2<f32>;
 
@@ -91,7 +91,7 @@ impl Vehicle {
     }
 
     /// Draw the vehicle as a triangle to a single graphics layer.
-    pub fn draw(&self) -> [Vertex; 3] {
+    pub fn draw(&self) -> [Vertex2d; 3] {
         const SIZE: f32 = 1.0;
 
         let look = self.vel.normalize();
@@ -103,15 +103,15 @@ impl Vehicle {
         let left = self.pos + (look_left * SIZE * 0.15) + (look * -0.5);
 
         [
-            Vertex {
+            Vertex2d {
                 pos: front.into(),
                 ..Default::default()
             },
-            Vertex {
+            Vertex2d {
                 pos: right.into(),
                 ..Default::default()
             },
-            Vertex {
+            Vertex2d {
                 pos: left.into(),
                 ..Default::default()
             },
