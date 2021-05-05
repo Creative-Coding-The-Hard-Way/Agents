@@ -156,6 +156,12 @@
 <span id="153">153</span>
 <span id="154">154</span>
 <span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! The application structure and supporting traits.</span>
 <span class="doccomment">//!</span>
@@ -164,7 +170,12 @@
 <span class="doccomment">//! ```rust,no_run</span>
 <span class="doccomment">//! use agents::app::{App, State};</span>
 <span class="doccomment">//! use anyhow::{Context, Result};</span>
-<span class="doccomment">//! use draw2d::{Graphics, LayerHandle, TextureHandle, Vertex};</span>
+<span class="doccomment">//! use draw2d::graphics::{</span>
+<span class="doccomment">//!     Graphics,</span>
+<span class="doccomment">//!     layer::{LayerHandle, Batch},</span>
+<span class="doccomment">//!     texture_atlas::TextureHandle,</span>
+<span class="doccomment">//!     vertex::Vertex2d</span>
+<span class="doccomment">//! };</span>
 <span class="doccomment">//! use glfw::Window;</span>
 <span class="doccomment">//! use std::time::Duration;</span>
 <span class="doccomment">//!</span>
@@ -179,7 +190,7 @@
 <span class="doccomment">//!   /// The constructor has access to both the window and graphics.</span>
 <span class="doccomment">//!   pub fn create(</span>
 <span class="doccomment">//!     window: &amp;mut glfw::Window,</span>
-<span class="doccomment">//!     graphics: &amp;mut draw2d::Graphics</span>
+<span class="doccomment">//!     graphics: &amp;mut Graphics</span>
 <span class="doccomment">//!   ) -&gt; Result&lt;Self&gt; {</span>
 <span class="doccomment">//!     Ok(Self {</span>
 <span class="doccomment">//!       layer: graphics.add_layer_to_top()</span>
@@ -197,22 +208,23 @@
 <span class="doccomment">//!     g: &amp;mut Graphics,</span>
 <span class="doccomment">//!     _dt: Duration</span>
 <span class="doccomment">//!   ) -&gt; Result&lt;()&gt; {</span>
-<span class="doccomment">//!     let layer = g.get_layer_mut(&amp;self.layer).unwrap();</span>
-<span class="doccomment">//!     layer.push_vertices(&amp;[</span>
-<span class="doccomment">//!         Vertex {</span>
+<span class="doccomment">//!     let mut batch = Batch::empty();</span>
+<span class="doccomment">//!     batch.vertices.extend_from_slice(&amp;[</span>
+<span class="doccomment">//!         Vertex2d {</span>
 <span class="doccomment">//!             pos: [-100.0, -100.0],</span>
 <span class="doccomment">//!             ..Default::default()</span>
 <span class="doccomment">//!         },</span>
-<span class="doccomment">//!         Vertex {</span>
+<span class="doccomment">//!         Vertex2d {</span>
 <span class="doccomment">//!             pos: [100.0, -100.0],</span>
 <span class="doccomment">//!             ..Default::default()</span>
 <span class="doccomment">//!         },</span>
-<span class="doccomment">//!         Vertex {</span>
+<span class="doccomment">//!         Vertex2d {</span>
 <span class="doccomment">//!             pos: [0.0, 100.0],</span>
 <span class="doccomment">//!             rgba: [0.1, 0.2, 0.8, 1.0],</span>
 <span class="doccomment">//!             ..Default::default()</span>
 <span class="doccomment">//!         },</span>
 <span class="doccomment">//!     ]);</span>
+<span class="doccomment">//!     g.get_layer_mut(&amp;self.layer).push_batch(batch);</span>
 <span class="doccomment">//!     Ok(())</span>
 <span class="doccomment">//!   }</span>
 <span class="doccomment">//! }</span>
@@ -227,7 +239,7 @@
 <span class="kw">mod</span> <span class="ident">update_timer</span>;
 
 <span class="kw">use</span> <span class="ident">anyhow</span>::<span class="prelude-ty">Result</span>;
-<span class="kw">use</span> <span class="ident">draw2d</span>::{<span class="ident">GlfwWindow</span>, <span class="ident">Graphics</span>};
+<span class="kw">use</span> <span class="ident">draw2d</span>::{<span class="ident">graphics</span>::<span class="ident">Graphics</span>, <span class="ident">GlfwWindow</span>};
 <span class="kw">use</span> <span class="ident">glfw</span>::{<span class="ident">Action</span>, <span class="ident">Key</span>, <span class="ident">WindowEvent</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::{<span class="ident">Duration</span>, <span class="ident">Instant</span>};
 
@@ -244,7 +256,7 @@
     <span class="kw">fn</span> <span class="ident">init</span>(
         <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
         <span class="ident">window</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">glfw</span>::<span class="ident">Window</span>,
-        <span class="ident">graphics</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">draw2d</span>::<span class="ident">Graphics</span>,
+        <span class="ident">graphics</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Graphics</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(())
     }
@@ -254,7 +266,7 @@
     <span class="kw">fn</span> <span class="ident">update</span>(
         <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
         <span class="ident">window</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">glfw</span>::<span class="ident">Window</span>,
-        <span class="ident">graphics</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">draw2d</span>::<span class="ident">Graphics</span>,
+        <span class="ident">graphics</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Graphics</span>,
         <span class="ident">update_duration</span>: <span class="ident">Duration</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(())
@@ -269,7 +281,7 @@
         <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
         <span class="ident">window_event</span>: <span class="kw-2">&amp;</span><span class="ident">glfw</span>::<span class="ident">WindowEvent</span>,
         <span class="ident">window</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">glfw</span>::<span class="ident">Window</span>,
-        <span class="ident">graphics</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">draw2d</span>::<span class="ident">Graphics</span>,
+        <span class="ident">graphics</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Graphics</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="ident">window_event</span> {
             <span class="ident">WindowEvent</span>::<span class="ident">Key</span>(<span class="ident">Key</span>::<span class="ident">Escape</span>, <span class="kw">_</span>, <span class="ident">Action</span>::<span class="ident">Press</span>, <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
