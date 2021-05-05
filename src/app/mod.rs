@@ -5,7 +5,12 @@
 //! ```rust,no_run
 //! use agents::app::{App, State};
 //! use anyhow::{Context, Result};
-//! use draw2d::{Graphics, LayerHandle, TextureHandle, Vertex};
+//! use draw2d::graphics::{
+//!     Graphics,
+//!     layer::{LayerHandle, Batch},
+//!     texture_atlas::TextureHandle,
+//!     vertex::Vertex2d
+//! };
 //! use glfw::Window;
 //! use std::time::Duration;
 //!
@@ -20,7 +25,7 @@
 //!   /// The constructor has access to both the window and graphics.
 //!   pub fn create(
 //!     window: &mut glfw::Window,
-//!     graphics: &mut draw2d::Graphics
+//!     graphics: &mut Graphics
 //!   ) -> Result<Self> {
 //!     Ok(Self {
 //!       layer: graphics.add_layer_to_top()
@@ -38,22 +43,23 @@
 //!     g: &mut Graphics,
 //!     _dt: Duration
 //!   ) -> Result<()> {
-//!     let layer = g.get_layer_mut(&self.layer).unwrap();
-//!     layer.push_vertices(&[
-//!         Vertex {
+//!     let mut batch = Batch::empty();
+//!     batch.vertices.extend_from_slice(&[
+//!         Vertex2d {
 //!             pos: [-100.0, -100.0],
 //!             ..Default::default()
 //!         },
-//!         Vertex {
+//!         Vertex2d {
 //!             pos: [100.0, -100.0],
 //!             ..Default::default()
 //!         },
-//!         Vertex {
+//!         Vertex2d {
 //!             pos: [0.0, 100.0],
 //!             rgba: [0.1, 0.2, 0.8, 1.0],
 //!             ..Default::default()
 //!         },
 //!     ]);
+//!     g.get_layer_mut(&self.layer).push_batch(batch);
 //!     Ok(())
 //!   }
 //! }
