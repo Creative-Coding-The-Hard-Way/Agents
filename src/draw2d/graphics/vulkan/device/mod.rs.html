@@ -1,7 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/draw2d-a9619e02bfc09cf0/080818b/src/graphics/vulkan/device/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../../../favicon.svg">
-<link rel="alternate icon" type="image/png" href="../../../../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../../../draw2d/index.html'><div class='logo-container rust-logo'><img src='../../../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../../../../settings.html"><img src="../../../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `&#x2F;home&#x2F;runner&#x2F;.cargo&#x2F;git&#x2F;checkouts&#x2F;draw2d-a9619e02bfc09cf0&#x2F;0dc8cbe&#x2F;src&#x2F;graphics&#x2F;vulkan&#x2F;device&#x2F;mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../../../storage.js"></script><script src="../../../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../../../draw2d/index.html'><div class='logo-container rust-logo'><img src='../../../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input"name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -215,7 +212,78 @@
 <span id="212">212</span>
 <span id="213">213</span>
 <span id="214">214</span>
-</pre><div class="example-wrap"><pre class="rust ">
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+</pre><pre class="rust">
 <span class="doccomment">//! This module provides functions for picking a physical device and creating</span>
 <span class="doccomment">//! the logical device.</span>
 
@@ -223,31 +291,36 @@
 <span class="kw">mod</span> <span class="ident">queue</span>;
 <span class="kw">mod</span> <span class="ident">queue_family_indices</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::{<span class="ident">queue</span>::<span class="ident">Queue</span>, <span class="ident">queue_family_indices</span>::<span class="ident">QueueFamilyIndices</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::{<span class="ident">queue::Queue</span>, <span class="ident">queue_family_indices::QueueFamilyIndices</span>};
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">graphics</span>::<span class="ident">vulkan</span>::{<span class="ident">ffi</span>::<span class="ident">to_os_ptrs</span>, <span class="ident">Instance</span>, <span class="ident">WindowSurface</span>};
-<span class="kw">use</span> <span class="ident">physical_device</span>::{
-    <span class="ident">pick_physical_device</span>, <span class="ident">required_device_extensions</span>, <span class="ident">required_device_features</span>,
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::graphics::vulkan</span>::{
+    <span class="ident">device_allocator</span>::{<span class="self">self</span>, <span class="ident">Allocation</span>},
+    <span class="ident">Instance</span>, <span class="ident">WindowSurface</span>,
 };
 
-<span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">Context</span>, <span class="prelude-ty">Result</span>};
-<span class="kw">use</span> <span class="ident">ash</span>::{
-    <span class="ident">version</span>::{<span class="ident">DeviceV1_0</span>, <span class="ident">InstanceV1_0</span>},
-    <span class="ident">vk</span>,
+<span class="kw">use</span> <span class="ident">anyhow::Result</span>;
+<span class="kw">use</span> <span class="ident">ash</span>::{<span class="ident">version::DeviceV1_0</span>, <span class="ident">vk</span>};
+<span class="kw">use</span> <span class="ident">std</span>::{
+    <span class="ident">ffi::CString</span>,
+    <span class="ident">sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>},
 };
-<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">ffi</span>::<span class="ident">CString</span>, <span class="ident">sync</span>::<span class="ident">Arc</span>};
+
+<span class="kw">use</span> <span class="kw">super</span>::{
+    <span class="ident">command_pool::OwnedCommandPool</span>, <span class="ident">device_allocator::DeviceAllocator</span>,
+};
 
 <span class="doccomment">/// This struct holds all device-specific resources, the physical device and</span>
 <span class="doccomment">/// logical device for interacting with it, and the associated queues.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Device</span> {
-    <span class="kw">pub</span> <span class="ident">physical_device</span>: <span class="ident">vk</span>::<span class="ident">PhysicalDevice</span>,
-    <span class="kw">pub</span> <span class="ident">logical_device</span>: <span class="ident">ash</span>::<span class="ident">Device</span>,
+    <span class="kw">pub</span> <span class="ident">physical_device</span>: <span class="ident">vk::PhysicalDevice</span>,
+    <span class="kw">pub</span> <span class="ident">logical_device</span>: <span class="ident">ash::Device</span>,
+    <span class="kw">pub</span> <span class="ident">graphics_queue</span>: <span class="ident">Queue</span>,
+    <span class="kw">pub</span> <span class="ident">present_queue</span>: <span class="ident">Queue</span>,
 
-    <span class="kw">pub</span> <span class="ident">graphics_queue</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Queue</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">present_queue</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Queue</span><span class="op">&gt;</span>,
+    <span class="ident">shared_graphics_pool</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">OwnedCommandPool</span><span class="op">&gt;</span>,
+    <span class="ident">allocator</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">DeviceAllocator</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 
-    <span class="doccomment">/// The Vulkan library instance used to create this device</span>
-    <span class="kw">pub</span> <span class="ident">instance</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Instance</span><span class="op">&gt;</span>,
+    <span class="ident">instance</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Instance</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Device</span> {
@@ -255,32 +328,54 @@
     <span class="doccomment">/// properties.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">window_surface</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">WindowSurface</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Device</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">instance</span> <span class="op">=</span> <span class="ident">window_surface</span>.<span class="ident">clone_vulkan_instance</span>();
-        <span class="kw">let</span> <span class="ident">physical_device</span> <span class="op">=</span> <span class="ident">pick_physical_device</span>(<span class="kw-2">&amp;</span><span class="ident">instance</span>, <span class="ident">window_surface</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">queue_family_indices</span> <span class="op">=</span> <span class="ident">QueueFamilyIndices</span>::<span class="ident">find</span>(
+        <span class="kw">let</span> <span class="ident">physical_device</span> <span class="op">=</span>
+            <span class="ident">physical_device::find_optimal</span>(<span class="kw-2">&amp;</span><span class="ident">instance</span>, <span class="ident">window_surface</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">queue_family_indices</span> <span class="op">=</span> <span class="ident">QueueFamilyIndices::find</span>(
             <span class="kw-2">&amp;</span><span class="ident">physical_device</span>,
-            <span class="kw-2">&amp;</span><span class="ident">instance</span>.<span class="ident">ash</span>,
+            <span class="ident">instance</span>.<span class="ident">raw</span>(),
             <span class="ident">window_surface</span>,
         )<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">logical_device</span> <span class="op">=</span> <span class="ident">create_logical_device</span>(
-            <span class="kw-2">&amp;</span><span class="ident">instance</span>,
+        <span class="kw">let</span> <span class="ident">logical_device</span> <span class="op">=</span> <span class="ident">instance</span>.<span class="ident">create_logical_device</span>(
             <span class="kw-2">&amp;</span><span class="ident">physical_device</span>,
-            <span class="kw-2">&amp;</span><span class="ident">queue_family_indices</span>,
+            <span class="ident">physical_device::required_features</span>(),
+            <span class="kw-2">&amp;</span><span class="ident">physical_device::required_extensions</span>(),
+            <span class="kw-2">&amp;</span><span class="ident">queue_family_indices</span>.<span class="ident">as_queue_create_infos</span>(),
         )<span class="question-mark">?</span>;
+
         <span class="kw">let</span> (<span class="ident">graphics_queue</span>, <span class="ident">present_queue</span>) <span class="op">=</span>
             <span class="ident">queue_family_indices</span>.<span class="ident">get_queues</span>(<span class="kw-2">&amp;</span><span class="ident">logical_device</span>)<span class="question-mark">?</span>;
 
-        <span class="kw">let</span> <span class="ident">device</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">allocator</span> <span class="op">=</span> <span class="ident">device_allocator::build_standard_allocator</span>(
+            <span class="ident">instance</span>.<span class="ident">ash</span>.<span class="ident">clone</span>(),
+            <span class="ident">logical_device</span>.<span class="ident">clone</span>(),
+            <span class="ident">physical_device</span>,
+        );
+
+        <span class="kw">let</span> <span class="ident">shared_graphics_pool</span> <span class="op">=</span> <span class="ident">Mutex::new</span>(<span class="ident">OwnedCommandPool::new</span>(
+            <span class="kw-2">&amp;</span><span class="ident">logical_device</span>,
+            <span class="ident">graphics_queue</span>.<span class="ident">family_id</span>,
+        )<span class="question-mark">?</span>);
+
+        <span class="kw">let</span> <span class="ident">device</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="self">Self</span> {
             <span class="ident">physical_device</span>,
             <span class="ident">logical_device</span>,
             <span class="ident">graphics_queue</span>,
             <span class="ident">present_queue</span>,
+            <span class="ident">shared_graphics_pool</span>,
+            <span class="ident">allocator</span>: <span class="ident">Mutex::new</span>(<span class="ident">allocator</span>),
             <span class="ident">instance</span>,
         });
 
         <span class="ident">device</span>.<span class="ident">name_vulkan_object</span>(
             <span class="string">&quot;Application Logical Device&quot;</span>,
-            <span class="ident">vk</span>::<span class="ident">ObjectType</span>::<span class="ident">DEVICE</span>,
+            <span class="ident">vk::ObjectType::DEVICE</span>,
             <span class="kw-2">&amp;</span><span class="ident">device</span>.<span class="ident">logical_device</span>.<span class="ident">handle</span>(),
+        )<span class="question-mark">?</span>;
+
+        <span class="ident">device</span>.<span class="ident">name_vulkan_object</span>(
+            <span class="string">&quot;Shared Graphics Pool&quot;</span>,
+            <span class="ident">vk::ObjectType::COMMAND_POOL</span>,
+            <span class="kw">unsafe</span> { <span class="ident">device</span>.<span class="ident">shared_graphics_pool</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">raw</span>() },
         )<span class="question-mark">?</span>;
 
         <span class="kw">if</span> <span class="ident">device</span>.<span class="ident">graphics_queue</span>.<span class="ident">is_same</span>(<span class="kw-2">&amp;</span><span class="ident">device</span>.<span class="ident">present_queue</span>) {
@@ -299,45 +394,21 @@
         <span class="prelude-val">Ok</span>(<span class="ident">device</span>)
     }
 
-    <span class="doccomment">/// Give a debug name for a vulkan object owned by this device.</span>
+    <span class="doccomment">/// Allocate a a chunk of memory for use in a buffer or texture.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// Whatever name is provided here will show up in the debug logs if there</span>
-    <span class="doccomment">/// are any issues detected by the validation layers.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">name_vulkan_object</span><span class="op">&lt;</span><span class="ident">Name</span>, <span class="ident">Handle</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">name</span>: <span class="ident">Name</span>,
-        <span class="ident">object_type</span>: <span class="ident">vk</span>::<span class="ident">ObjectType</span>,
-        <span class="ident">handle</span>: <span class="kw-2">&amp;</span><span class="ident">Handle</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">Handle</span>: <span class="ident">vk</span>::<span class="ident">Handle</span> <span class="op">+</span> <span class="ident">Copy</span>,
-        <span class="ident">Name</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    {
-        <span class="kw">let</span> <span class="ident">cname</span> <span class="op">=</span> <span class="ident">CString</span>::<span class="ident">new</span>(<span class="ident">name</span>.<span class="ident">into</span>()).<span class="ident">unwrap</span>();
-
-        <span class="kw">let</span> <span class="ident">name_info</span> <span class="op">=</span> <span class="ident">vk</span>::<span class="ident">DebugUtilsObjectNameInfoEXT</span>::<span class="ident">builder</span>()
-            .<span class="ident">object_name</span>(<span class="kw-2">&amp;</span><span class="ident">cname</span>)
-            .<span class="ident">object_type</span>(<span class="ident">object_type</span>)
-            .<span class="ident">object_handle</span>(<span class="ident">handle</span>.<span class="ident">as_raw</span>());
-
-        <span class="kw">unsafe</span> {
-            <span class="self">self</span>.<span class="ident">instance</span>.<span class="ident">debug</span>.<span class="ident">debug_utils_set_object_name</span>(
-                <span class="self">self</span>.<span class="ident">logical_device</span>.<span class="ident">handle</span>(),
-                <span class="kw-2">&amp;</span><span class="ident">name_info</span>,
-            )<span class="question-mark">?</span>;
-        }
-
-        <span class="prelude-val">Ok</span>(())
-    }
-
-    <span class="doccomment">/// Directly allocate device memory.</span>
-    <span class="doccomment">/// Unsafe because the caller is responsible for cleanup and handling the</span>
-    <span class="doccomment">/// lifecycle of the allocated memory.</span>
+    <span class="doccomment">/// # unsafe because</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// - the caller is responsible for eventually calling &#39;free memory&#39; before</span>
+    <span class="doccomment">///   the application quits</span>
+    <span class="doccomment">///</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">allocate_memory</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">memory_requirements</span>: <span class="ident">vk</span>::<span class="ident">MemoryRequirements</span>,
-        <span class="ident">property_flags</span>: <span class="ident">vk</span>::<span class="ident">MemoryPropertyFlags</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">vk</span>::<span class="ident">DeviceMemory</span><span class="op">&gt;</span> {
+        <span class="ident">memory_requirements</span>: <span class="ident">vk::MemoryRequirements</span>,
+        <span class="ident">property_flags</span>: <span class="ident">vk::MemoryPropertyFlags</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Allocation</span><span class="op">&gt;</span> {
+        <span class="kw">use</span> <span class="ident">anyhow::Context</span>;
+        <span class="kw">use</span> <span class="ident">ash::version::InstanceV1_0</span>;
+
         <span class="kw">let</span> <span class="ident">memory_properties</span> <span class="op">=</span> <span class="self">self</span>
             .<span class="ident">instance</span>
             .<span class="ident">ash</span>
@@ -359,14 +430,98 @@
                 <span class="string">&quot;unable to find a suitable memory type for this allocation!&quot;</span>
             })<span class="question-mark">?</span>;
 
-        <span class="kw">let</span> <span class="ident">allocate_info</span> <span class="op">=</span> <span class="ident">vk</span>::<span class="ident">MemoryAllocateInfo</span>::<span class="ident">builder</span>()
-            .<span class="ident">allocation_size</span>(<span class="ident">memory_requirements</span>.<span class="ident">size</span>)
-            .<span class="ident">memory_type_index</span>(<span class="ident">memory_type_index</span>);
+        <span class="self">self</span>.<span class="ident">allocator</span>
+            .<span class="ident">lock</span>()
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">allocate</span>(<span class="ident">vk::MemoryAllocateInfo</span> {
+                <span class="ident">memory_type_index</span>,
+                <span class="ident">allocation_size</span>: <span class="ident">memory_requirements</span>.<span class="ident">size</span>,
+                ..<span class="ident">Default::default</span>()
+            })
+    }
 
-        <span class="kw">let</span> <span class="ident">memory</span> <span class="op">=</span>
-            <span class="self">self</span>.<span class="ident">logical_device</span>.<span class="ident">allocate_memory</span>(<span class="kw-2">&amp;</span><span class="ident">allocate_info</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+    <span class="doccomment">/// Free a memory allocation.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # unsafe because</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// - the caller is responsible for ensuring that the memory is no longer</span>
+    <span class="doccomment">///   in use by the gpu.</span>
+    <span class="doccomment">///</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">free_memory</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">allocation</span>: <span class="kw-2">&amp;</span><span class="ident">Allocation</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">allocator</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">free</span>(<span class="ident">allocation</span>)
+    }
 
-        <span class="prelude-val">Ok</span>(<span class="ident">memory</span>)
+    <span class="doccomment">/// Give a debug name for a vulkan object owned by this device.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Whatever name is provided here will show up in the debug logs if there</span>
+    <span class="doccomment">/// are any issues detected by the validation layers.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">name_vulkan_object</span><span class="op">&lt;</span><span class="ident">Name</span>, <span class="ident">Handle</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">name</span>: <span class="ident">Name</span>,
+        <span class="ident">object_type</span>: <span class="ident">vk::ObjectType</span>,
+        <span class="ident">handle</span>: <span class="kw-2">&amp;</span><span class="ident">Handle</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">Handle</span>: <span class="ident">vk::Handle</span> <span class="op">+</span> <span class="ident">Copy</span>,
+        <span class="ident">Name</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    {
+        <span class="kw">let</span> <span class="ident">cname</span> <span class="op">=</span> <span class="ident">CString::new</span>(<span class="ident">name</span>.<span class="ident">into</span>()).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">name_info</span> <span class="op">=</span> <span class="ident">vk::DebugUtilsObjectNameInfoEXT</span> {
+            <span class="ident">object_type</span>,
+            <span class="ident">p_object_name</span>: <span class="ident">cname</span>.<span class="ident">as_ptr</span>(),
+            <span class="ident">object_handle</span>: <span class="ident">handle</span>.<span class="ident">as_raw</span>(),
+            ..<span class="ident">Default::default</span>()
+        };
+
+        <span class="kw">unsafe</span> {
+            <span class="self">self</span>.<span class="ident">instance</span>.<span class="ident">debug</span>.<span class="ident">debug_utils_set_object_name</span>(
+                <span class="self">self</span>.<span class="ident">logical_device</span>.<span class="ident">handle</span>(),
+                <span class="kw-2">&amp;</span><span class="ident">name_info</span>,
+            )<span class="question-mark">?</span>;
+        }
+
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="doccomment">/// Synchronously submit commands for execution on the graphics queue.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This method is internally synchronized and can be called on multiple</span>
+    <span class="doccomment">/// threads without any additional synchronization.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This method forces the device to wait idle after submitting commands,</span>
+    <span class="doccomment">/// as such it is very slow (don&#39;t do it in a loop every frame!).</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Unsafe Because</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// - no internal synchronization is done, any resources used by graphcis</span>
+    <span class="doccomment">///   commands must be synchronized by the caller</span>
+    <span class="doccomment">/// - note: the device idles after the submission, so no resources refereced</span>
+    <span class="doccomment">///   inside this method should be in-use after the call.</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">sync_graphics_commands</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">Action</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="kw-2">mut</span> <span class="ident">action</span>: <span class="ident">Action</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">Action</span>: <span class="ident">FnMut</span>(<span class="ident">vk::CommandBuffer</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span>,
+    {
+        <span class="kw">let</span> <span class="ident">pool</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">shared_graphics_pool</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">command_buffer</span> <span class="op">=</span>
+            <span class="ident">pool</span>.<span class="ident">allocate_command_buffer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">logical_device</span>)<span class="question-mark">?</span>;
+
+        <span class="kw">let</span> <span class="ident">begin_info</span> <span class="op">=</span> <span class="ident">vk::CommandBufferBeginInfo</span> {
+            <span class="ident">flags</span>: <span class="ident">vk::CommandBufferUsageFlags::ONE_TIME_SUBMIT</span>,
+            ..<span class="ident">Default::default</span>()
+        };
+        <span class="self">self</span>.<span class="ident">logical_device</span>
+            .<span class="ident">begin_command_buffer</span>(<span class="ident">command_buffer</span>, <span class="op">&amp;&amp;</span><span class="ident">begin_info</span>)<span class="question-mark">?</span>;
+
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">action</span>(<span class="ident">command_buffer</span>);
+
+        <span class="self">self</span>.<span class="ident">logical_device</span>.<span class="ident">end_command_buffer</span>(<span class="ident">command_buffer</span>)<span class="question-mark">?</span>;
+        <span class="self">self</span>.<span class="ident">submit_and_wait_idle</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">graphics_queue</span>, <span class="ident">command_buffer</span>)<span class="question-mark">?</span>;
+        <span class="ident">pool</span>.<span class="ident">free_command_buffer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">logical_device</span>, <span class="ident">command_buffer</span>);
+
+        <span class="ident">result</span>
     }
 
     <span class="doccomment">/// Submit a command buffer to the specified queue, then wait for it to</span>
@@ -374,18 +529,28 @@
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">submit_and_wait_idle</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">queue</span>: <span class="kw-2">&amp;</span><span class="ident">Queue</span>,
-        <span class="ident">command_buffer</span>: <span class="ident">vk</span>::<span class="ident">CommandBuffer</span>,
+        <span class="ident">command_buffer</span>: <span class="ident">vk::CommandBuffer</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">queue_handle</span> <span class="op">=</span> <span class="ident">queue</span>.<span class="ident">acquire</span>();
+        <span class="kw">let</span> <span class="ident">command_buffers</span> <span class="op">=</span> <span class="kw-2">&amp;</span>[<span class="ident">command_buffer</span>];
         <span class="self">self</span>.<span class="ident">logical_device</span>.<span class="ident">queue_submit</span>(
-            <span class="kw-2">*</span><span class="ident">queue_handle</span>,
-            <span class="kw-2">&amp;</span>[<span class="ident">vk</span>::<span class="ident">SubmitInfo</span>::<span class="ident">builder</span>()
-                .<span class="ident">command_buffers</span>(<span class="kw-2">&amp;</span>[<span class="ident">command_buffer</span>])
-                .<span class="ident">build</span>()],
-            <span class="ident">vk</span>::<span class="ident">Fence</span>::<span class="ident">null</span>(),
+            <span class="ident">queue</span>.<span class="ident">raw</span>(),
+            <span class="kw-2">&amp;</span>[<span class="ident">vk::SubmitInfo</span> {
+                <span class="ident">p_command_buffers</span>: <span class="ident">command_buffers</span>.<span class="ident">as_ptr</span>(),
+                <span class="ident">command_buffer_count</span>: <span class="number">1</span>,
+                ..<span class="ident">Default::default</span>()
+            }],
+            <span class="ident">vk::Fence::null</span>(),
         )<span class="question-mark">?</span>;
-        <span class="self">self</span>.<span class="ident">logical_device</span>.<span class="ident">queue_wait_idle</span>(<span class="kw-2">*</span><span class="ident">queue_handle</span>)<span class="question-mark">?</span>;
+        <span class="self">self</span>.<span class="ident">logical_device</span>.<span class="ident">queue_wait_idle</span>(<span class="ident">queue</span>.<span class="ident">raw</span>())<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="doccomment">/// Create a new swapchain loader which will be owned by the caller.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">create_swapchain_loader</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ash::extensions::khr::Swapchain</span> {
+        <span class="ident">ash::extensions::khr::Swapchain::new</span>(
+            <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">instance</span>.<span class="ident">ash</span>,
+            <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">logical_device</span>,
+        )
     }
 }
 
@@ -396,40 +561,15 @@
     <span class="doccomment">/// not be destroyed until the logical device has been dropped.</span>
     <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="kw">unsafe</span> {
+            <span class="self">self</span>.<span class="ident">shared_graphics_pool</span>
+                .<span class="ident">lock</span>()
+                .<span class="ident">unwrap</span>()
+                .<span class="ident">destroy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">logical_device</span>);
             <span class="self">self</span>.<span class="ident">logical_device</span>.<span class="ident">destroy_device</span>(<span class="prelude-val">None</span>);
         }
     }
 }
-
-<span class="doccomment">/// Create a new logical device for use by this application. The caller is</span>
-<span class="doccomment">/// responsible for destroying the device when done.</span>
-<span class="kw">fn</span> <span class="ident">create_logical_device</span>(
-    <span class="ident">instance</span>: <span class="kw-2">&amp;</span><span class="ident">Instance</span>,
-    <span class="ident">physical_device</span>: <span class="kw-2">&amp;</span><span class="ident">vk</span>::<span class="ident">PhysicalDevice</span>,
-    <span class="ident">queue_family_indices</span>: <span class="kw-2">&amp;</span><span class="ident">QueueFamilyIndices</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ash</span>::<span class="ident">Device</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">queue_create_infos</span> <span class="op">=</span> <span class="ident">queue_family_indices</span>.<span class="ident">as_queue_create_infos</span>();
-    <span class="kw">let</span> <span class="ident">features</span> <span class="op">=</span> <span class="ident">required_device_features</span>();
-    <span class="kw">let</span> (<span class="ident">_c_names</span>, <span class="ident">layer_name_ptrs</span>) <span class="op">=</span>
-        <span class="kw">unsafe</span> { <span class="ident">to_os_ptrs</span>(<span class="kw-2">&amp;</span><span class="ident">instance</span>.<span class="ident">enabled_layer_names</span>) };
-    <span class="kw">let</span> (<span class="ident">_c_ext_names</span>, <span class="ident">ext_name_ptrs</span>) <span class="op">=</span>
-        <span class="kw">unsafe</span> { <span class="ident">to_os_ptrs</span>(<span class="kw-2">&amp;</span><span class="ident">required_device_extensions</span>()) };
-
-    <span class="kw">let</span> <span class="ident">create_info</span> <span class="op">=</span> <span class="ident">vk</span>::<span class="ident">DeviceCreateInfo</span>::<span class="ident">builder</span>()
-        .<span class="ident">queue_create_infos</span>(<span class="kw-2">&amp;</span><span class="ident">queue_create_infos</span>)
-        .<span class="ident">enabled_features</span>(<span class="kw-2">&amp;</span><span class="ident">features</span>)
-        .<span class="ident">enabled_layer_names</span>(<span class="kw-2">&amp;</span><span class="ident">layer_name_ptrs</span>)
-        .<span class="ident">enabled_extension_names</span>(<span class="kw-2">&amp;</span><span class="ident">ext_name_ptrs</span>);
-
-    <span class="kw">let</span> <span class="ident">logical_device</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-        <span class="ident">instance</span>
-            .<span class="ident">ash</span>
-            .<span class="ident">create_device</span>(<span class="kw-2">*</span><span class="ident">physical_device</span>, <span class="kw-2">&amp;</span><span class="ident">create_info</span>, <span class="prelude-val">None</span>)
-            .<span class="ident">context</span>(<span class="string">&quot;unable to create the logical device&quot;</span>)<span class="question-mark">?</span>
-    };
-
-    <span class="prelude-val">Ok</span>(<span class="ident">logical_device</span>)
-}
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../../../" data-current-crate="draw2d"></div>
-    <script src="../../../../../main.js"></script><script src="../../../../../source-script.js"></script><script src="../../../../../source-files.js"></script><script defer src="../../../../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../../../" data-current-crate="draw2d" data-search-index-js="../../../../../search-index.js" data-search-js="../../../../../search.js"></div>
+    <script src="../../../../../main.js"></script><script src="../../../../../source-script.js"></script><script src="../../../../../source-files.js"></script>
+</body></html>

@@ -1,7 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/spin_sleep-1.0.0/src/loop_helper.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>loop_helper.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings"></script><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg">
-<link rel="alternate icon" type="image/png" href="../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../spin_sleep/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `&#x2F;home&#x2F;runner&#x2F;.cargo&#x2F;registry&#x2F;src&#x2F;github.com-1ecc6299db9ec823&#x2F;spin_sleep-1.0.0&#x2F;src&#x2F;loop_helper.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>loop_helper.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../spin_sleep/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input"name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -254,7 +251,7 @@
 <span id="251">251</span>
 <span id="252">252</span>
 <span id="253">253</span>
-</pre><div class="example-wrap"><pre class="rust ">
+</pre><pre class="rust">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">f64</span>,
@@ -317,7 +314,7 @@
     <span class="doccomment">/// Sets the interval between</span>
     <span class="doccomment">/// [`LoopHelper::report_rate`](/struct.LoopHelper.html#method.report_rate) reports in seconds.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">report_interval_s</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">seconds</span>: <span class="ident">Seconds</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">report_interval</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Duration</span>::<span class="ident">from_secs_f64</span>(<span class="ident">seconds</span>));
+        <span class="self">self</span>.<span class="ident">report_interval</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Duration::from_secs_f64</span>(<span class="ident">seconds</span>));
         <span class="self">self</span>
     }
 
@@ -335,7 +332,7 @@
     <span class="doccomment">/// Set this to ensure consistent behaviour across releases. However, consider that this</span>
     <span class="doccomment">/// value *should* be tuned &amp; tested for a given platform.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">native_accuracy_ns</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">accuracy</span>: <span class="ident">SubsecondNanoseconds</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">sleeper</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">SpinSleeper</span>::<span class="ident">new</span>(<span class="ident">accuracy</span>));
+        <span class="self">self</span>.<span class="ident">sleeper</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">SpinSleeper::new</span>(<span class="ident">accuracy</span>));
         <span class="self">self</span>
     }
 
@@ -344,25 +341,25 @@
     <span class="doccomment">/// [`LoopHelper::loop_sleep`](struct.LoopHelper.html#method.loop_sleep) will simply return</span>
     <span class="doccomment">/// immediately. Normally used when only interested in the LoopHelper rate reporting.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build_without_target_rate</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">LoopHelper</span> {
-        <span class="self">self</span>.<span class="ident">build_with_target_rate</span>(<span class="ident">f64</span>::<span class="ident">INFINITY</span>)
+        <span class="self">self</span>.<span class="ident">build_with_target_rate</span>(<span class="ident">f64::INFINITY</span>)
     }
 
     <span class="doccomment">/// Builds a [`LoopHelper`](struct.LoopHelper.html) targeting an input `target_rate`.</span>
     <span class="doccomment">/// Note: The `target_rate` only affects</span>
     <span class="doccomment">/// [`LoopHelper::loop_sleep`](struct.LoopHelper.html#method.loop_sleep).</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build_with_target_rate</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">RatePerSecond</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">target_rate</span>: <span class="ident">R</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">LoopHelper</span> {
-        <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Instant</span>::<span class="ident">now</span>();
+        <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Instant::now</span>();
         <span class="kw">let</span> <span class="ident">interval</span> <span class="op">=</span> <span class="self">self</span>
             .<span class="ident">report_interval</span>
-            .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1</span>));
+            .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Duration::from_secs</span>(<span class="number">1</span>));
 
         <span class="ident">LoopHelper</span> {
-            <span class="ident">target_delta</span>: <span class="ident">Duration</span>::<span class="ident">from_secs_f64</span>(<span class="number">1.0</span> <span class="op">/</span> <span class="ident">target_rate</span>.<span class="ident">into</span>()),
+            <span class="ident">target_delta</span>: <span class="ident">Duration::from_secs_f64</span>(<span class="number">1.0</span> <span class="op">/</span> <span class="ident">target_rate</span>.<span class="ident">into</span>()),
             <span class="ident">report_interval</span>: <span class="ident">interval</span>,
-            <span class="ident">sleeper</span>: <span class="self">self</span>.<span class="ident">sleeper</span>.<span class="ident">unwrap_or_else</span>(<span class="ident">SpinSleeper</span>::<span class="ident">default</span>),
+            <span class="ident">sleeper</span>: <span class="self">self</span>.<span class="ident">sleeper</span>.<span class="ident">unwrap_or_else</span>(<span class="ident">SpinSleeper::default</span>),
             <span class="ident">last_report</span>: <span class="ident">now</span>,
             <span class="ident">last_loop_start</span>: <span class="ident">now</span>,
-            <span class="ident">delta_sum</span>: <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">0</span>),
+            <span class="ident">delta_sum</span>: <span class="ident">Duration::from_secs</span>(<span class="number">0</span>),
             <span class="ident">delta_count</span>: <span class="number">0</span>,
         }
     }
@@ -381,7 +378,7 @@
     <span class="doccomment">/// Notifies the helper that a new loop has begun.</span>
     <span class="doccomment">/// Returns the delta, the duration since the last call to `loop_start` or `loop_start_s`.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">loop_start</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Duration</span> {
-        <span class="kw">let</span> <span class="ident">it_start</span> <span class="op">=</span> <span class="ident">Instant</span>::<span class="ident">now</span>();
+        <span class="kw">let</span> <span class="ident">it_start</span> <span class="op">=</span> <span class="ident">Instant::now</span>();
         <span class="kw">let</span> <span class="ident">delta</span> <span class="op">=</span> <span class="ident">it_start</span>.<span class="ident">duration_since</span>(<span class="self">self</span>.<span class="ident">last_loop_start</span>);
         <span class="self">self</span>.<span class="ident">last_loop_start</span> <span class="op">=</span> <span class="ident">it_start</span>;
         <span class="self">self</span>.<span class="ident">delta_sum</span> <span class="op">+</span><span class="op">=</span> <span class="ident">delta</span>;
@@ -421,10 +418,10 @@
     <span class="doccomment">/// Returns the mean rate per second recorded since the last report. Returns `None` if</span>
     <span class="doccomment">/// the last report was within the configured `report_interval`.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">report_rate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RatePerSecond</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Instant</span>::<span class="ident">now</span>();
+        <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">Instant::now</span>();
         <span class="kw">if</span> <span class="ident">now</span>.<span class="ident">duration_since</span>(<span class="self">self</span>.<span class="ident">last_report</span>) <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">report_interval</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">delta_count</span> <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="kw">let</span> <span class="ident">report</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">f64</span>::<span class="ident">from</span>(<span class="self">self</span>.<span class="ident">delta_count</span>) <span class="op">/</span> <span class="self">self</span>.<span class="ident">delta_sum</span>.<span class="ident">as_secs_f64</span>());
-            <span class="self">self</span>.<span class="ident">delta_sum</span> <span class="op">=</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">0</span>);
+            <span class="kw">let</span> <span class="ident">report</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">f64::from</span>(<span class="self">self</span>.<span class="ident">delta_count</span>) <span class="op">/</span> <span class="self">self</span>.<span class="ident">delta_sum</span>.<span class="ident">as_secs_f64</span>());
+            <span class="self">self</span>.<span class="ident">delta_sum</span> <span class="op">=</span> <span class="ident">Duration::from_secs</span>(<span class="number">0</span>);
             <span class="self">self</span>.<span class="ident">delta_count</span> <span class="op">=</span> <span class="number">0</span>;
             <span class="self">self</span>.<span class="ident">last_report</span> <span class="op">=</span> <span class="ident">now</span>;
             <span class="ident">report</span>
@@ -435,7 +432,7 @@
 
     <span class="doccomment">/// Changes the target loop rate</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_target_rate</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">RatePerSecond</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">target_rate</span>: <span class="ident">R</span>) {
-        <span class="self">self</span>.<span class="ident">target_delta</span> <span class="op">=</span> <span class="ident">Duration</span>::<span class="ident">from_secs_f64</span>(<span class="number">1.0</span> <span class="op">/</span> <span class="ident">target_rate</span>.<span class="ident">into</span>());
+        <span class="self">self</span>.<span class="ident">target_delta</span> <span class="op">=</span> <span class="ident">Duration::from_secs_f64</span>(<span class="number">1.0</span> <span class="op">/</span> <span class="ident">target_rate</span>.<span class="ident">into</span>());
     }
 
     <span class="doccomment">/// Returns the current target loop rate</span>
@@ -448,51 +445,51 @@
 <span class="kw">mod</span> <span class="ident">loop_helper_test</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident">approx</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">thread</span>;
+    <span class="kw">use</span> <span class="ident">std::thread</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">rate_reporting_using_duration</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">loop_helper</span> <span class="op">=</span> <span class="ident">LoopHelper</span>::<span class="ident">builder</span>()
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">loop_helper</span> <span class="op">=</span> <span class="ident">LoopHelper::builder</span>()
             .<span class="ident">report_interval_s</span>(<span class="number">0.0</span>)
             .<span class="ident">build_without_target_rate</span>();
 
         <span class="kw">let</span> <span class="ident">loops</span> <span class="op">=</span> <span class="number">10</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">deltas</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">deltas</span> <span class="op">=</span> <span class="macro">vec!</span>[];
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">loops</span> {
             <span class="ident">deltas</span>.<span class="ident">push</span>(<span class="ident">loop_helper</span>.<span class="ident">loop_start</span>());
-            <span class="ident">thread</span>::<span class="ident">sleep</span>(<span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="number">1000</span>));
+            <span class="ident">thread::sleep</span>(<span class="ident">Duration::new</span>(<span class="number">0</span>, <span class="number">1000</span>));
         }
 
         <span class="kw">let</span> <span class="ident">reported_rate</span> <span class="op">=</span> <span class="ident">loop_helper</span>.<span class="ident">report_rate</span>().<span class="ident">expect</span>(<span class="string">&quot;missing report&quot;</span>);
-        <span class="kw">let</span> <span class="ident">expected_rate</span> <span class="op">=</span> <span class="ident">f64</span>::<span class="ident">from</span>(<span class="ident">loops</span>) <span class="op">/</span> <span class="ident">deltas</span>.<span class="ident">iter</span>().<span class="ident">sum</span>::<span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span>().<span class="ident">as_secs_f64</span>();
+        <span class="kw">let</span> <span class="ident">expected_rate</span> <span class="op">=</span> <span class="ident">f64::from</span>(<span class="ident">loops</span>) <span class="op">/</span> <span class="ident">deltas</span>.<span class="ident">iter</span>().<span class="ident">sum</span>::<span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span>().<span class="ident">as_secs_f64</span>();
 
-        <span class="macro">assert_relative_eq</span><span class="macro">!</span>(<span class="ident">reported_rate</span>, <span class="ident">expected_rate</span>);
+        <span class="macro">assert_relative_eq!</span>(<span class="ident">reported_rate</span>, <span class="ident">expected_rate</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">rate_reporting_using_seconds</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">loop_helper</span> <span class="op">=</span> <span class="ident">LoopHelper</span>::<span class="ident">builder</span>()
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">loop_helper</span> <span class="op">=</span> <span class="ident">LoopHelper::builder</span>()
             .<span class="ident">report_interval_s</span>(<span class="number">0.0</span>)
             .<span class="ident">build_without_target_rate</span>();
 
         <span class="kw">let</span> <span class="ident">loops</span> <span class="op">=</span> <span class="number">10</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">deltas</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">deltas</span> <span class="op">=</span> <span class="macro">vec!</span>[];
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">loops</span> {
             <span class="ident">deltas</span>.<span class="ident">push</span>(<span class="ident">loop_helper</span>.<span class="ident">loop_start_s</span>());
-            <span class="ident">thread</span>::<span class="ident">sleep</span>(<span class="ident">Duration</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="number">1000</span>));
+            <span class="ident">thread::sleep</span>(<span class="ident">Duration::new</span>(<span class="number">0</span>, <span class="number">1000</span>));
         }
 
         <span class="kw">let</span> <span class="ident">reported_rate</span> <span class="op">=</span> <span class="ident">loop_helper</span>.<span class="ident">report_rate</span>().<span class="ident">expect</span>(<span class="string">&quot;missing report&quot;</span>);
-        <span class="kw">let</span> <span class="ident">expected_rate</span> <span class="op">=</span> <span class="ident">f64</span>::<span class="ident">from</span>(<span class="ident">loops</span>) <span class="op">/</span> <span class="ident">deltas</span>.<span class="ident">iter</span>().<span class="ident">sum</span>::<span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>();
+        <span class="kw">let</span> <span class="ident">expected_rate</span> <span class="op">=</span> <span class="ident">f64::from</span>(<span class="ident">loops</span>) <span class="op">/</span> <span class="ident">deltas</span>.<span class="ident">iter</span>().<span class="ident">sum</span>::<span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>();
 
-        <span class="macro">assert_relative_eq</span><span class="macro">!</span>(<span class="ident">reported_rate</span>, <span class="ident">expected_rate</span>, <span class="ident">epsilon</span> <span class="op">=</span> <span class="number">1e-9</span>);
+        <span class="macro">assert_relative_eq!</span>(<span class="ident">reported_rate</span>, <span class="ident">expected_rate</span>, <span class="ident">epsilon</span> <span class="op">=</span> <span class="number">1e-9</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">loop_sleep_already_past_target</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">loop_helper</span> <span class="op">=</span> <span class="ident">LoopHelper</span>::<span class="ident">builder</span>()
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">loop_helper</span> <span class="op">=</span> <span class="ident">LoopHelper::builder</span>()
             .<span class="ident">report_interval_s</span>(<span class="number">0.0</span>)
-            .<span class="ident">build_with_target_rate</span>(<span class="ident">f64</span>::<span class="ident">INFINITY</span>);
+            .<span class="ident">build_with_target_rate</span>(<span class="ident">f64::INFINITY</span>);
 
         <span class="ident">loop_helper</span>.<span class="ident">loop_start</span>();
 
@@ -501,13 +498,14 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">get_set_target_rate</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">loop_helper</span> <span class="op">=</span> <span class="ident">LoopHelper</span>::<span class="ident">builder</span>().<span class="ident">build_with_target_rate</span>(<span class="number">100.0</span>);
-        <span class="macro">assert_relative_eq</span><span class="macro">!</span>(<span class="ident">loop_helper</span>.<span class="ident">target_rate</span>(), <span class="number">100.0</span>, <span class="ident">epsilon</span> <span class="op">=</span> <span class="number">1e-4</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">loop_helper</span> <span class="op">=</span> <span class="ident">LoopHelper::builder</span>().<span class="ident">build_with_target_rate</span>(<span class="number">100.0</span>);
+        <span class="macro">assert_relative_eq!</span>(<span class="ident">loop_helper</span>.<span class="ident">target_rate</span>(), <span class="number">100.0</span>, <span class="ident">epsilon</span> <span class="op">=</span> <span class="number">1e-4</span>);
 
         <span class="ident">loop_helper</span>.<span class="ident">set_target_rate</span>(<span class="number">150.0</span>);
-        <span class="macro">assert_relative_eq</span><span class="macro">!</span>(<span class="ident">loop_helper</span>.<span class="ident">target_rate</span>(), <span class="number">150.0</span>, <span class="ident">epsilon</span> <span class="op">=</span> <span class="number">1e-4</span>);
+        <span class="macro">assert_relative_eq!</span>(<span class="ident">loop_helper</span>.<span class="ident">target_rate</span>(), <span class="number">150.0</span>, <span class="ident">epsilon</span> <span class="op">=</span> <span class="number">1e-4</span>);
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="spin_sleep"></div>
-    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="spin_sleep" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
+    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>
+</body></html>
