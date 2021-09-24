@@ -7,7 +7,9 @@ use anyhow::Result;
 use draw2d::{
     camera::{default_camera_controls, OrthoCamera},
     graphics::{
+        ext::TextureLoader,
         layer::{Batch, LayerHandle},
+        texture_atlas::TextureAtlas,
         vertex::Vertex2d,
         Graphics,
     },
@@ -64,8 +66,9 @@ impl State for Demo {
         self.update_projection(graphics);
 
         let mut background = Batch::empty();
-        background.texture_handle =
-            graphics.add_texture("./assets/GridCell.png")?;
+        let grid_cell_texture =
+            graphics.read_texture_file("./assets/GridCell.png")?;
+        background.texture_handle = graphics.add_texture(grid_cell_texture)?;
 
         let size = 20.0;
         let grid_spacing = 2.0;

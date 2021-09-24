@@ -4,8 +4,9 @@ use anyhow::Result;
 use draw2d::{
     camera::{default_camera_controls, OrthoCamera},
     graphics::{
+        ext::TextureLoader,
         layer::{Batch, LayerHandle},
-        texture_atlas::TextureHandle,
+        texture_atlas::{TextureAtlas, TextureHandle},
         vertex::Vertex2d,
         Graphics,
     },
@@ -22,7 +23,9 @@ impl Demo {
     fn new(window: &mut glfw::Window, graphics: &mut Graphics) -> Result<Self> {
         let (w, h) = window.get_size();
         Ok(Self {
-            texture: graphics.add_texture("assets/example.png")?,
+            texture: graphics.add_texture(
+                graphics.read_texture_file("assets/example.png")?,
+            )?,
             layer: graphics.add_layer_to_top(),
             camera: OrthoCamera::with_viewport(w as f32, w as f32 / h as f32),
         })

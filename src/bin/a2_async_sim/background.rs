@@ -1,15 +1,19 @@
 use super::Demo;
 
 use anyhow::Result;
-use draw2d::graphics::{layer::Batch, vertex::Vertex2d, Graphics};
+use draw2d::graphics::{
+    ext::TextureLoader, layer::Batch, texture_atlas::TextureAtlas,
+    vertex::Vertex2d, Graphics,
+};
 
 impl Demo {
     /// Render the background grid geometry below all other geometry for the
     /// frame.
     pub fn build_background(&self, graphics: &mut Graphics) -> Result<Batch> {
         let mut background = Batch::empty();
-        background.texture_handle =
-            graphics.add_texture("./assets/GridCell.png")?;
+        let grid_cell_texture =
+            graphics.read_texture_file("./assets/GridCell.png")?;
+        background.texture_handle = graphics.add_texture(grid_cell_texture)?;
 
         let size = 20.0;
         let grid_spacing = 4.0;
